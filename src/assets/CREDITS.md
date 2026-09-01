@@ -16,16 +16,17 @@ CC0 — public domain, no restrictions, attribution not required. Credited anywa
 
 ## CraftPix — licensed, redistribution prohibited
 
-- `hero.png` — CraftPix free base character sprite atlas (being replaced by the
-  paid "Swordsman" pack, see below).
-- `boss.png` — CraftPix free undead tileset, boss sprite.
-- `weapons.png`, `potions.png` — atlases packed by `scripts/pack-icons.mjs`
-  from **paid CraftPix icon packs** (`Asset_1/Weapon`, `Asset_1/Potion`). The
-  source `Asset_1/` tree is gitignored; only the packed atlases are committed.
+- `boss.png` — CraftPix undead boss sprite (crowned lich).
+- `hero1/2/3.png` — Swordsman lvl1-3, packed by `scripts/pack-hero.mjs`.
+- `weapons.png`, `potions.png` — `scripts/pack-icons.mjs`.
+- `mobs.png` — `scripts/pack-mobs.mjs` (8 monster icons).
+- `props.png` — `scripts/pack-props.mjs` (14 graveyard decorations).
+- `fx_fire/burst/ice.png` — `scripts/pack-fx.mjs` (10-frame effect strips).
 
-The art re-skin from the paid `Asset_1/` CraftPix packs (Swordsman lvl1-3,
-UI kit, weapon/potion/monster icons, effect strips, map tilesets) is in
-progress. Owner holds a CraftPix licence for these.
+All the above are packed from **paid CraftPix packs** in `Asset_1/`, which is
+gitignored — only the packed atlases are committed. Owner holds a CraftPix
+licence. `tilesheet.png` / `env.png` / the `ui-*` 9-slices are still Kenney
+(CC0). The HTML UI has not been reskinned.
 
 **Verified against craftpix.net/file-licenses on 2026-09-01** (stage 6, pre-deploy):
 

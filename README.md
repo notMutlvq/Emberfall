@@ -25,9 +25,13 @@ up to the login screen.
   wipe saved data. Loading screen. Sound scaffold (`src/game/audio.ts` +
   `public/sfx/` — silent until files are added).
 
-Art: ships on placeholder art (Kenney tiles + CraftPix hero). A full
-re-skin from the paid `Asset_1/` CraftPix packs is the next big piece —
-see below.
+Art rebrand from the paid `Asset_1/` CraftPix packs (in progress): real
+per-item icons, an animated Swordsman hero that gears up by level,
+graveyard map props + a calmer floor, sprite-animation combat effects, and
+CraftPix monster sprites. `scripts/pack-*.mjs` build the committed atlases
+from `Asset_1/` (gitignored). The HTML **UI kit is deliberately not
+reskinned** — the current dark-slate UI is clean and fully Arabic, and the
+CraftPix kit's bitmap font is Latin-only.
 
 ### Base path
 
