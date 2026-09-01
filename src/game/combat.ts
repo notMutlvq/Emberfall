@@ -16,6 +16,7 @@ import { lootMsg, toast, buildSkills, paintHud } from "./hud.ts";
 import { questTick } from "./quests.ts";
 import { toHub } from "./state.ts";
 import { recordRunEnd } from "./save.ts";
+import { submitRun } from "../net/leaderboard.ts";
 
 export const AI_R = 17;
 
@@ -445,6 +446,16 @@ export function die(): void {
   ($("over") as HTMLElement).style.display = "flex";
   // run is over: drop the mirror, flush stash + best score + run count
   recordRunEnd();
+
+  // submit to the global leaderboard (no-op offline / signed out)
+  $("oversubmit").textContent = "";
+  void submitRun(S.run).then((res) => {
+    const el = document.getElementById("oversubmit");
+    if (!el) return;
+    if (res.ok) el.textContent = res.flagged ? "Submitted — flagged for review." : "Submitted to the leaderboard.";
+    else if (res.reason === "error") el.textContent = "Leaderboard submit failed — " + (res.error ?? "unknown") + ".";
+    // offline / anon: stay silent
+  });
 }
 
 function fx(x: number, y: number, v: number | string, c: string): void {

@@ -45,7 +45,10 @@ create trigger on_auth_user_created
 -- ─────────────────────────────────────────────────────────────────────────
 create table if not exists public.runs (
   id            bigint generated always as identity primary key,
-  user_id       uuid not null references auth.users (id) on delete cascade,
+  -- references profiles, not auth.users, so PostgREST can embed the
+  -- username on a leaderboard query (runs -> profiles). profiles itself
+  -- cascades from auth.users, so account deletion still clears runs.
+  user_id       uuid not null references public.profiles (id) on delete cascade,
   class         text not null check (class in ('warrior', 'ranger', 'mage')),
   level         int  not null check (level >= 1),
   kills         int  not null check (kills >= 0),

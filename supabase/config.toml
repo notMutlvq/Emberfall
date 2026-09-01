@@ -1,0 +1,13 @@
+# Minimal Supabase CLI config. Set project_id to your project ref
+# (Project Settings -> General -> Reference ID), then:
+#   supabase link --project-ref <ref>
+#   supabase db push                 # applies schema.sql + policies.sql? no —
+#                                    # run those two by hand in the SQL editor
+#   supabase functions deploy submit-run
+project_id = "YOUR-PROJECT-REF"
+
+[functions.submit-run]
+# The client always calls this with a signed-in user's JWT. We still verify
+# the user inside the function (a valid JWT can be the anon key), so platform
+# JWT verification is belt-and-braces.
+verify_jwt = true

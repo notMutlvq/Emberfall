@@ -87,6 +87,7 @@
     <p class="meta" id="oversub" style="margin-bottom:16px"></p>
     <div class="statbox" id="overstats"></div>
     <div class="statbox" id="overbest"></div>
+    <p class="meta" id="oversubmit"></p>
     <button class="btn go wide" data-act="newrun" style="padding:12px">Begin a new run</button>
     <button class="btn wide" id="btn-over-menu" style="padding:10px;margin-top:8px">Main menu</button>
   </div>
@@ -114,7 +115,14 @@
     <button class="btn go wide" id="mm-newrun" style="padding:12px;margin-top:8px">New run</button>
     <div class="statbox" style="margin-top:14px">
       <div class="slab">Leaderboard</div>
-      <div id="mm-board" class="meta">Top runs will appear here once the leaderboard ships.</div>
+      <div class="tabs" id="mm-board-tabs" style="margin-bottom:8px">
+        <div class="tab on" data-board="all">All</div>
+        <div class="tab" data-board="warrior">Warrior</div>
+        <div class="tab" data-board="ranger">Ranger</div>
+        <div class="tab" data-board="mage">Mage</div>
+      </div>
+      <div id="mm-rank" class="meta"></div>
+      <div id="mm-board" class="meta">—</div>
     </div>
     <button class="btn wide" id="mm-logout" style="margin-top:10px;display:none">Log out</button>
   </div>
