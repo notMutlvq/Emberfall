@@ -4,14 +4,19 @@ Portrait mobile roguelike ARPG. Ported from the single-file prototype
 `emberfall-v9.html` (kept in the repo as the gameplay reference — see that
 file and `emberfall-claude-code-prompt.md` for the full spec).
 
-## Status: stage 4 of 6
+## Status: stage 5 of 6
 
-Auth + `profiles`, run/stash persistence, and now the **leaderboard**: the
-main menu shows the global top 20 (filterable by class), your best score
-and your rank. Finished runs are posted through the `submit-run` edge
-function — the `runs` table has no client insert path. Arabic/RTL + art
-re-skin (stage 5) and PWA/deploy (stage 6) remain. See
-`emberfall-claude-code-prompt.md` §12.
+Auth + `profiles`, run/stash persistence, leaderboard, and now the
+**full Arabic/RTL pass**: `<html lang="ar" dir="rtl">`, every string in
+Arabic, Tajawal for Arabic text (Silkscreen kept for the Latin logo). The
+canvas game world does not mirror — joystick right, abilities left. See
+`GLOSSARY.md` for the terminology and `emberfall-claude-code-prompt.md`
+§7 / §12. Only PWA + deploy (stage 6) remains.
+
+The **`Asset_1/` art re-skin was dropped** (no license file was ever
+supplied; the pack is a medieval-town set that doesn't fit a dungeon
+crawler). The game ships on the stage-1 placeholder art — Kenney tiles +
+the CraftPix hero. Revisit post-launch if wanted.
 
 Persistence recap: an in-progress run is mirrored to `localStorage`
 (survives a reload / phone lock / dropped connection — "Resume run" on the
@@ -29,6 +34,18 @@ npm run build            # typecheck + production build to dist/
 
 Without `.env` the game runs **offline**: no login screen, no leaderboard,
 nothing persists — handy for working on gameplay.
+
+## Strings / i18n
+
+The game is Arabic-only. `src/i18n/ar.ts` holds every UI-chrome string
+(mirrored key-for-key by `en.ts`, which is the type source + debug
+reference); reach them with `t(key, vars)`. Game *content* names (classes,
+abilities and their upgrade nodes, zones, item bases, rarities, affixes)
+are Arabic directly in the data tables — `src/game/core.ts`, `classes.ts`,
+`abilities.ts`, `zones.ts` — because they are 1:1 with ids and read better
+colocated. `GLOSSARY.md` is the full term list. Static HTML text uses
+`data-i18n` / `data-i18n-ph` attributes filled by `applyStaticI18n()` at
+boot.
 
 ## Supabase setup (stage 2+)
 
@@ -82,7 +99,7 @@ replay validation, which isn't worth it for a handful of players. Use the
   /ui       screens, auth, mainmenu (menu + leaderboard), menu (class pick),
             sheets (bag/skills/craft/atlas)
   /net      supabase client, username/password auth, player_state, leaderboard
-  /i18n     en.ts / ar.ts string tables — not wired into the UI yet (stage 5)
+  /i18n     ar.ts (shipped) + en.ts (type source / debug) + t() and applyStaticI18n()
   /assets   extracted PNGs + CREDITS.md (licensing — read before deploy)
 /supabase   schema.sql, policies.sql, functions/submit-run/ (edge function)
 ```
@@ -97,10 +114,13 @@ depend on it without forming a hard cycle.
 
 ## Known gaps
 
-- The player sprite (`src/assets/hero.png`) is an unclothed base layer —
-  a clothing layer is outstanding art work. A full art re-skin (from the
-  `Asset_1/` pack) is planned for stage 5 alongside the Arabic/RTL pass.
+- **Art**: ships on placeholder art (Kenney tiles + an unclothed CraftPix
+  hero). The `Asset_1/` re-skin was dropped in stage 5 — no license, wrong
+  genre. Any future art pass is its own effort.
 - Regular monster tiles are Kenney tiles and visually clash with the
-  CraftPix hero/ground; matching monster art is still needed.
+  CraftPix hero/ground.
+- A few Arabic strings carry RTL/LTR marks (`‏`) to keep
+  number+symbol runs (`+3.2/ث`, `-10%`) reading correctly next to Arabic
+  text — expected, not a bug.
 - Idle/offline farming from the prototype was intentionally cut — this is
   a run-based roguelike.

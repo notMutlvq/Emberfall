@@ -17,6 +17,7 @@ import { questTick } from "./quests.ts";
 import { toHub } from "./state.ts";
 import { recordRunEnd } from "./save.ts";
 import { submitRun } from "../net/leaderboard.ts";
+import { t } from "../i18n/index.ts";
 
 export const AI_R = 17;
 
@@ -218,7 +219,7 @@ export function update(dt: number): void {
         if (l.pot) {
           if (S.pots < S.POTMAX) {
             S.pots++;
-            lootMsg("Potion");
+            lootMsg(t("potion"));
             return false;
           }
           return true;
@@ -231,7 +232,7 @@ export function update(dt: number): void {
     if (!Z.bossUp && Z.mobs.length === 0) {
       Z.bossUp = true;
       Z.mobs.push(newMob(Z.d as ZoneDef, Z.bossRoom!.cx + 0.5, Z.bossRoom!.cy + 0.5, { boss: true }));
-      lootMsg("The " + Z.d.boss + " awakens.");
+      lootMsg(t("bossAwakens", { boss: Z.d.boss }));
     }
     if (Z.portal && Math.hypot(P.x - Z.portal.x, P.y - Z.portal.y) < 0.95) {
       toHub();
@@ -267,7 +268,7 @@ function spawnAdds(m: Mob, n: number): void {
     mm.agro = true;
     Z.mobs.push(mm);
   }
-  lootMsg("It calls for aid.");
+  lootMsg(t("bossCallsAid"));
 }
 
 function mshoot(m: Mob): void {
@@ -287,7 +288,7 @@ export function takeHit(raw: number, st: Stats): void {
     if (st.guard && !S.guardUsed) {
       S.guardUsed = true;
       S.hp = Math.round(st.hp * 0.35);
-      toast("Unbroken holds.");
+      toast(t("unbrokenHolds"));
     } else die();
   }
 }
@@ -355,11 +356,11 @@ function killMob(m: Mob): void {
   questTick(m.boss ? "boss" : "kill");
   if (m.boss) {
     S.shard += 3;
-    lootMsg("+3 shards");
+    lootMsg(t("shardsGained"));
     if (!S.cleared.includes(S.zone)) S.cleared.push(S.zone);
     Z.portal = { x: m.x, y: m.y + 1.3 };
     for (let i = 0; i < 3; i++) dropLoot(m.x + (i - 1) * 0.7, m.y, Z.d.ilvl + 5, i === 0 ? 2 : undefined);
-    lootMsg("Zone cleared. Portal home is open.");
+    lootMsg(t("zoneClearedPortal"));
   } else {
     Z.killed++;
     if (m.elite) {
@@ -376,15 +377,15 @@ export function dropLoot(x: number, y: number, ilvl: number, fr?: number): void 
 
 function grab(it: Item): void {
   if (S.bag.length >= S.BAGMAX) {
-    toast("Bag full.");
+    toast(t("bagFull"));
     return;
   }
   if (!S.run.best || itemScore(it) > itemScore(S.run.best)) S.run.best = it;
   S.bag.push(it);
   ($("newdot") as HTMLElement).style.display = "block";
-  lootMsg(it.name + (it.rar ? " · " + RARITY[it.rar].name : ""));
+  lootMsg(it.rar ? t("lootNameRarity", { name: it.name, rarity: RARITY[it.rar].name }) : it.name);
   const cur = S.eq[it.slot];
-  if (!cur || itemScore(it) > itemScore(cur) * 1.05) lootMsg("  ↑ upgrade");
+  if (!cur || itemScore(it) > itemScore(cur) * 1.05) lootMsg(t("lootUpgrade"));
 }
 
 function gainXP(n: number): void {
@@ -393,11 +394,11 @@ function gainXP(n: number): void {
     S.xp -= xpNeed(S.lv);
     S.lv++;
     S.pts++;
-    lootMsg("Level " + S.lv + " — skill point");
+    lootMsg(t("levelSkillPoint", { lv: S.lv }));
     ($("ptdot") as HTMLElement).style.display = "block";
     const nw = abList().filter((a) => a.lvl === S.lv);
     nw.forEach((a) => {
-      lootMsg("New ability: " + a.name.replace("\n", " "));
+      lootMsg(t("newAbility", { name: a.name.replace("\n", " ") }));
       autoSlot(a.id);
     });
   }
@@ -413,7 +414,7 @@ export function autoSlot(id: string): void {
 
 export function fmtTime(ms: number): string {
   const s = Math.floor(ms / 1000);
-  return Math.floor(s / 60) + "m " + (s % 60) + "s";
+  return t("timeFmt", { m: Math.floor(s / 60), s: s % 60 });
 }
 
 export function die(): void {
@@ -429,20 +430,34 @@ export function die(): void {
   if (!prev || score > (prev.score ?? 0)) S.best = { ...R };
   S.runs++;
   const Z = W.Z;
-  $("oversub").textContent = S.name + " the " + CLASSES[S.cls!].name + " · run " + S.runs + " · " + fmtTime(dur);
+  $("oversub").textContent = t("overSub", {
+    name: S.name,
+    cls: CLASSES[S.cls!].name,
+    run: S.runs,
+    time: fmtTime(dur),
+  });
+  const find = R.best
+    ? t("bestFindItem", { rarity: RARITY[R.best.rar].name, name: R.best.name, ilvl: R.best.ilvl })
+    : t("nothingWorthKeeping");
   $("overstats").innerHTML =
-    `<div class="slab">This run</div>
-   reached level <b style="color:var(--gold)">${S.lv}</b><br>
-   died in <b style="color:var(--gold)">${Z.hub ? "Ember Camp" : Z.d.name}</b><br>
-   zones cleared ${R.zones} · deepest ${ZONES[R.deepest].name}<br>
-   kills ${R.kills} · elites ${R.elites} · bosses ${R.bosses}<br>
-   gold earned ${R.gold}<br>
-   best find ${R.best ? RARITY[R.best.rar].name + " " + R.best.name + " (ilvl " + R.best.ilvl + ")" : "nothing worth keeping"}<br>
-   <span style="color:var(--gold)">score ${score}</span>`;
+    `<div class="slab">${t("thisRun")}</div>
+   ${t("reachedLevel", { lv: `<b style="color:var(--gold)">${S.lv}</b>` })}<br>
+   ${t("diedIn", { place: `<b style="color:var(--gold)">${Z.hub ? t("emberCamp") : Z.d.name}</b>` })}<br>
+   ${t("zonesDeepest", { zones: R.zones, deepest: ZONES[R.deepest].name })}<br>
+   ${t("killsElitesBosses", { kills: R.kills, elites: R.elites, bosses: R.bosses })}<br>
+   ${t("goldEarned", { gold: R.gold })}<br>
+   ${t("bestFind", { find })}<br>
+   <span style="color:var(--gold)">${t("scoreLine", { score })}</span>`;
   $("overbest").innerHTML = prev
-    ? `<div class="slab">Best run so far</div>${prev.name || ""} the ${CLASSES[prev.cls!].name} · level ${prev.lv} · ${prev.zones} zones · score ${prev.score}`
-    : '<div class="slab">Best run so far</div>this one — nothing to beat yet';
-  $("overtitle").textContent = score > (prev ? (prev.score ?? 0) : 0) ? "A new best" : "You fell";
+    ? `<div class="slab">${t("bestRunSoFar")}</div>${t("bestRunLine", {
+        name: prev.name || "",
+        cls: CLASSES[prev.cls!].name,
+        lv: prev.lv ?? 1,
+        zones: prev.zones,
+        score: prev.score ?? 0,
+      })}`
+    : `<div class="slab">${t("bestRunSoFar")}</div>${t("noBestYet")}`;
+  $("overtitle").textContent = score > (prev ? (prev.score ?? 0) : 0) ? t("aNewBest") : t("youFell");
   ($("over") as HTMLElement).style.display = "flex";
   // run is over: drop the mirror, flush stash + best score + run count
   recordRunEnd();
@@ -452,8 +467,8 @@ export function die(): void {
   void submitRun(S.run).then((res) => {
     const el = document.getElementById("oversubmit");
     if (!el) return;
-    if (res.ok) el.textContent = res.flagged ? "Submitted — flagged for review." : "Submitted to the leaderboard.";
-    else if (res.reason === "error") el.textContent = "Leaderboard submit failed — " + (res.error ?? "unknown") + ".";
+    if (res.ok) el.textContent = res.flagged ? t("submitFlagged") : t("submitOk");
+    else if (res.reason === "error") el.textContent = t("submitFail", { error: res.error ?? "?" });
     // offline / anon: stay silent
   });
 }
@@ -486,7 +501,7 @@ export function useSlot(i: number): void {
   if ((ab.until || 0) > now) return;
   const cost = abCost(ab);
   if (S.mp < cost) {
-    toast("Not enough mana.");
+    toast(t("notEnoughMana"));
     return;
   }
   S.mp -= cost;
@@ -577,7 +592,7 @@ function activateAbility(ab: Ability, m: AbMods, st: Stats, dmg: number, hits: n
 export function drinkPotion(): void {
   if (S.pots <= 0) return;
   const st = stats();
-  if (S.hp >= st.hp) return toast("Already full.");
+  if (S.hp >= st.hp) return toast(t("potsFull"));
   S.pots--;
   S.hp = Math.min(st.hp, S.hp + Math.round(st.hp * 0.4));
   S.mp = Math.min(st.mana, S.mp + Math.round(st.mana * 0.25));

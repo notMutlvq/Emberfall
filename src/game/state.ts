@@ -13,6 +13,7 @@ import { autoSlot } from "./combat.ts";
 import { go, paintAll } from "../ui/sheets.ts";
 import { showScreen } from "../ui/screens.ts";
 import { saveRun } from "./save.ts";
+import { t } from "../i18n/index.ts";
 
 export function newRunState(): void {
   S.lv = 1;
@@ -71,7 +72,7 @@ export function enterZone(i: number): void {
   S.hp = stats().hp;
   S.auras = {};
   go("fight");
-  toast("— " + ZONES[i].name + " —");
+  toast(t("zoneBanner", { zone: ZONES[i].name }));
   paintAll();
   saveRun();
 }

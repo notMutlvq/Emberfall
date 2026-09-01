@@ -57,7 +57,7 @@ export function genHub(): void {
   for (let y = 3; y < Hd - 3; y++) for (let x = 3; x < Wd - 3; x++) g[y][x] = 0;
   W.Z = {
     hub: true,
-    d: { name: "Ember Camp", ilvl: 0, boss: "" },
+    d: { name: "مخيّم الجمر", ilvl: 0, boss: "" },
     g,
     W: Wd,
     H: Hd,
@@ -71,10 +71,10 @@ export function genHub(): void {
     killed: 0,
     total: 0,
     objs: [
-      { t: "stash", x: 8.5, y: 6.5, label: "Open stash" },
-      { t: "anvil", x: 13.5, y: 6.5, label: "Open workbench" },
-      { t: "npc", x: 19, y: 7, tile: CHARS.quarter, label: "Talk to the Quartermaster" },
-      { t: "gate", x: 13.5, y: 16, label: "Open the gate" },
+      { t: "stash", x: 8.5, y: 6.5, label: "افتح المخزن" },
+      { t: "anvil", x: 13.5, y: 6.5, label: "افتح طاولة الصناعة" },
+      { t: "npc", x: 19, y: 7, tile: CHARS.quarter, label: "تحدّث إلى أمين المؤن" },
+      { t: "gate", x: 13.5, y: 16, label: "افتح البوابة" },
     ],
   };
   P.x = 13.5;
@@ -165,8 +165,8 @@ export function genZone(zi: number): void {
     showChest: false,
     bossRoom: rooms[rooms.length - 1],
     objs: [
-      { t: "chest", x: cr.cx + 0.5, y: cr.cy + 0.5, label: "Open chest" },
-      { t: "npc", x: nr.cx + 1.5, y: nr.cy + 0.5, tile: CHARS.scholar, npcKind: "scholar", label: "Talk to the Scholar" },
+      { t: "chest", x: cr.cx + 0.5, y: cr.cy + 0.5, label: "افتح الصندوق" },
+      { t: "npc", x: nr.cx + 1.5, y: nr.cy + 0.5, tile: CHARS.scholar, npcKind: "scholar", label: "تحدّث إلى العالِمة" },
     ],
   };
   P.x = rooms[0].cx + 0.5;

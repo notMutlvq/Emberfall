@@ -13,10 +13,12 @@ import { initAuth } from "./ui/auth.ts";
 import { initMainMenu, showMainMenu } from "./ui/mainmenu.ts";
 import { showScreen } from "./ui/screens.ts";
 import { loadMeta, attachUser, detachUser } from "./game/save.ts";
+import { applyStaticI18n } from "./i18n/index.ts";
 
 let profile: Profile | null = null;
 
 async function boot(): Promise<void> {
+  applyStaticI18n();
   await whenAssetsReady();
   loadMeta();
   buildMenu();

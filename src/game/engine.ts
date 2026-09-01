@@ -18,6 +18,7 @@ import { toast } from "./hud.ts";
 import { newRun, enterZone } from "./state.ts";
 import { selectCls, beginRun } from "../ui/menu.ts";
 import { saveRun, isRunActive } from "./save.ts";
+import { t as tr } from "../i18n/index.ts";
 
 /* ---------- frame loop ---------- */
 let last = performance.now();
@@ -152,9 +153,9 @@ function handleTap(e: Event): void {
   if (d.act === "interact") return interact(window.__near);
   if (d.act === "salvageall") {
     const j = S.bag.filter((i) => i.rar === 0);
-    if (!j.length) return void toast("No commons.");
+    if (!j.length) return void toast(tr("noCommons"));
     j.slice().forEach(salvage);
-    return void toast("Salvaged " + j.length + ".");
+    return void toast(tr("salvagedN", { n: j.length }));
   }
   if (d.cls) return selectCls(d.cls as ClassKey);
   if (d.act === "begin") return beginRun();

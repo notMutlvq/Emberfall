@@ -3,6 +3,7 @@
  */
 import { $ } from "../game/core.ts";
 import { signIn, signUp, usernameError, passwordError, normalizeUsername, type Profile } from "../net/auth.ts";
+import { t } from "../i18n/index.ts";
 
 type Mode = "login" | "signup";
 let mode: Mode = "login";
@@ -11,8 +12,8 @@ let onDone: ((p: Profile) => void) | null = null;
 
 export function initAuth(onSuccess: (p: Profile) => void): void {
   onDone = onSuccess;
-  document.querySelectorAll<HTMLElement>("[data-authtab]").forEach((t) => {
-    t.addEventListener("click", () => setMode(t.dataset.authtab as Mode));
+  document.querySelectorAll<HTMLElement>("[data-authtab]").forEach((el) => {
+    el.addEventListener("click", () => setMode(el.dataset.authtab as Mode));
   });
   $("authgo").addEventListener("click", () => void submit());
   const onEnter = (e: KeyboardEvent) => {
@@ -25,8 +26,8 @@ export function initAuth(onSuccess: (p: Profile) => void): void {
 
 function setMode(m: Mode): void {
   mode = m;
-  document.querySelectorAll<HTMLElement>("[data-authtab]").forEach((t) => t.classList.toggle("on", t.dataset.authtab === m));
-  $("authgo").textContent = m === "login" ? "Log in" : "Create account";
+  document.querySelectorAll<HTMLElement>("[data-authtab]").forEach((el) => el.classList.toggle("on", el.dataset.authtab === m));
+  $("authgo").textContent = m === "login" ? t("login") : t("createAccount");
   ($("authpass") as HTMLInputElement).autocomplete = m === "login" ? "current-password" : "new-password";
   ($("authwarn") as HTMLElement).style.display = m === "signup" ? "block" : "none";
   $("autherr").textContent = "";
@@ -39,7 +40,7 @@ function err(msg: string): void {
 function setBusy(b: boolean): void {
   busy = b;
   ($("authgo") as HTMLButtonElement).disabled = b;
-  $("authgo").textContent = b ? "…" : mode === "login" ? "Log in" : "Create account";
+  $("authgo").textContent = b ? t("authBusy") : mode === "login" ? t("login") : t("createAccount");
 }
 
 async function submit(): Promise<void> {

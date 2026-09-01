@@ -13,6 +13,7 @@ import { stats } from "../game/items.ts";
 import { resize } from "../game/render.ts";
 import { startLoop } from "../game/engine.ts";
 import { loadRun, applyRun, setRunActive, saveRun } from "../game/save.ts";
+import { t } from "../i18n/index.ts";
 import { paintAll } from "./sheets.ts";
 import { showScreen } from "./screens.ts";
 
@@ -27,9 +28,9 @@ export function buildMenu(): void {
         `<div class="cchoice" data-cls="${k}"><img src="${heroPortrait(k)}" style="width:52px;image-rendering:pixelated">
    <div style="flex:1"><b>${c.name}</b><div class="d">${c.blurb}</div>
     <div class="cbars">
-     life ${bar3(c.bars.life, "var(--blood)")}<b>${Math.round(70 * c.base.hp)}</b><br>
-     damage ${bar3(c.bars.damage, "var(--gold)")}<b>${c.base.atk.toFixed(2)}x</b><br>
-     mana ${bar3(c.bars.mana, "var(--arc)")}<b>${c.base.mana} (+${c.base.regen}/s)</b>
+     ${t("barLife")} ${bar3(c.bars.life, "var(--blood)")}<b>${Math.round(70 * c.base.hp)}</b><br>
+     ${t("barDamage")} ${bar3(c.bars.damage, "var(--gold)")}<b>${t("classMult", { v: c.base.atk.toFixed(2) })}</b><br>
+     ${t("barMana")} ${bar3(c.bars.mana, "var(--arc)")}<b>${t("classMana", { mana: c.base.mana, regen: c.base.regen })}</b>
     </div></div></div>`,
     )
     .join("");
@@ -41,9 +42,9 @@ export function selectCls(k: ClassKey): void {
 }
 
 export function beginRun(): void {
-  if (!S.pend) return toast("Choose a path first.");
+  if (!S.pend) return toast(t("pickFirst"));
   const nm = ((($("pname") as HTMLInputElement).value || "") as string).trim();
-  if (!nm) return toast("Enter a name.");
+  if (!nm) return toast(t("enterName"));
   S.name = nm;
   S.cls = S.pend;
   showScreen("game");
@@ -51,7 +52,7 @@ export function beginRun(): void {
   setRunActive(true);
   saveRun();
   resize();
-  lootMsg("Ember Camp. Take a bounty, then the gate.");
+  lootMsg(t("campWelcome"));
   startLoop();
 }
 
@@ -60,7 +61,7 @@ export function beginRun(): void {
  * HP — no mid-combat state is kept (locked decision #5). */
 export function resumeRun(): void {
   const d = loadRun();
-  if (!d) return toast("No run to resume.");
+  if (!d) return toast(t("noRunResume"));
   applyRun(d);
   showScreen("game");
   if (S.zone < 0) genHub();
@@ -73,6 +74,6 @@ export function resumeRun(): void {
   buildSkills();
   resize();
   paintAll();
-  lootMsg("Run restored.");
+  lootMsg(t("runRestored"));
   startLoop();
 }

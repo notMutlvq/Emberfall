@@ -8,6 +8,7 @@ import { CLASSES } from "./classes.ts";
 import { abById, abMods, abCost } from "./abilities.ts";
 import { stats } from "./items.ts";
 import { xpNeed } from "./core.ts";
+import { t } from "../i18n/index.ts";
 
 interface SkillBtn {
   b: HTMLElement;
@@ -68,17 +69,22 @@ function paintHudSlow(st: Stats): void {
   $("pgold").textContent = String(Math.max(0, Math.round(S.gold)));
   $("pshard").textContent = String(S.shard);
   $("zonename").textContent = Z.d.name;
-  $("zonemeta").textContent =
-    (S.name ? S.name + " the " : "") + CLASSES[S.cls!].name + " lv" + S.lv +
-    " · " + Math.round(Math.max(0, S.hp)) + "/" + Math.round(st.hp) + " hp · " +
-    Math.round(S.mp) + "/" + Math.round(st.mana) + " mp";
+  $("zonemeta").textContent = t("metaTheClass", {
+    name: S.name,
+    cls: CLASSES[S.cls!].name,
+    lv: S.lv,
+    hp: Math.round(Math.max(0, S.hp)),
+    maxhp: Math.round(st.hp),
+    mp: Math.round(S.mp),
+    maxmp: Math.round(st.mana),
+  });
   $("objective").textContent = Z.hub
-    ? "Camp — stash, workbench, bounties, gate"
+    ? t("objCamp")
     : Z.portal
-      ? "Portal home is open"
+      ? t("objPortal")
       : Z.bossUp
-        ? "Slay the " + Z.d.boss
-        : "Clear the zone  " + Z.killed + "/" + Z.total;
+        ? t("objBoss", { boss: Z.d.boss })
+        : t("objClear", { k: Z.killed, n: Z.total });
   const pb = $("potion") as HTMLButtonElement;
   pb.textContent = String(S.pots);
   pb.disabled = S.pots <= 0;

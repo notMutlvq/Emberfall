@@ -7,6 +7,7 @@
  * turned OFF (Authentication -> Providers -> Email).
  */
 import { supabase } from "./supabase.ts";
+import { t } from "../i18n/index.ts";
 
 const SYNTH_DOMAIN = "players.emberfall.app";
 const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
@@ -16,13 +17,13 @@ export function normalizeUsername(raw: string): string {
   return raw.normalize("NFKC").trim().toLowerCase();
 }
 export function usernameError(u: string): string | null {
-  if (u.length < 3) return "Username must be at least 3 characters.";
-  if (u.length > 20) return "Username must be at most 20 characters.";
-  if (!USERNAME_RE.test(u)) return "Username can only use a–z, 0–9 and underscore.";
+  if (u.length < 3) return t("errUserShort");
+  if (u.length > 20) return t("errUserLong");
+  if (!USERNAME_RE.test(u)) return t("errUserChars");
   return null;
 }
 export function passwordError(p: string): string | null {
-  return p.length < MIN_PASSWORD ? `Password must be at least ${MIN_PASSWORD} characters.` : null;
+  return p.length < MIN_PASSWORD ? t("errPassShort", { min: MIN_PASSWORD }) : null;
 }
 function emailFor(username: string): string {
   return `${username}@${SYNTH_DOMAIN}`;
@@ -55,14 +56,14 @@ export async function usernameTaken(username: string): Promise<boolean> {
 }
 
 export async function signUp(usernameRaw: string, password: string): Promise<AuthResult> {
-  if (!supabase) return { ok: false, error: "Offline — Supabase is not configured." };
+  if (!supabase) return { ok: false, error: t("errOffline") };
   const username = normalizeUsername(usernameRaw);
   const ue = usernameError(username);
   if (ue) return { ok: false, error: ue };
   const pe = passwordError(password);
   if (pe) return { ok: false, error: pe };
 
-  if (await usernameTaken(username)) return { ok: false, error: "That username is taken." };
+  if (await usernameTaken(username)) return { ok: false, error: t("errUserTaken") };
 
   const { data, error } = await supabase.auth.signUp({
     email: emailFor(username),
@@ -72,25 +73,20 @@ export async function signUp(usernameRaw: string, password: string): Promise<Aut
   if (error) {
     const m = error.message.toLowerCase();
     if (m.includes("already registered") || m.includes("database error saving")) {
-      return { ok: false, error: "That username is taken." };
+      return { ok: false, error: t("errUserTaken") };
     }
-    if (m.includes("password")) return { ok: false, error: error.message };
     return { ok: false, error: error.message };
   }
   if (!data.session) {
-    return {
-      ok: false,
-      error:
-        "Account created but not signed in — turn OFF “Confirm email” in Supabase (Authentication → Providers → Email), then log in.",
-    };
+    return { ok: false, error: t("errNoSession") };
   }
   return { ok: true, profile: { id: data.user!.id, username } };
 }
 
 export async function signIn(usernameRaw: string, password: string): Promise<AuthResult> {
-  if (!supabase) return { ok: false, error: "Offline — Supabase is not configured." };
+  if (!supabase) return { ok: false, error: t("errOffline") };
   const username = normalizeUsername(usernameRaw);
-  if (!username || !password) return { ok: false, error: "Enter a username and password." };
+  if (!username || !password) return { ok: false, error: t("errEnterBoth") };
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email: emailFor(username),
@@ -98,7 +94,7 @@ export async function signIn(usernameRaw: string, password: string): Promise<Aut
   });
   if (error) {
     const m = error.message.toLowerCase();
-    if (m.includes("invalid login")) return { ok: false, error: "Wrong username or password." };
+    if (m.includes("invalid login")) return { ok: false, error: t("errWrongLogin") };
     return { ok: false, error: error.message };
   }
   return { ok: true, profile: { id: data.user.id, username } };

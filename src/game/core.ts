@@ -75,32 +75,35 @@ export interface Item {
   affixes: Affix[];
 }
 
+/* Arabic display strings live in the data tables (see stage-5 note in
+ * src/i18n/index.ts): game content is colocated with its data, UI chrome
+ * goes through t(). English originals are in git / emberfall-v9.html. */
 export const RARITY: { k: RarityKey; name: string; aff: number; mat: number }[] = [
-  { k: "n", name: "Common", aff: 1, mat: 1 },
-  { k: "m", name: "Fine", aff: 2, mat: 2 },
-  { k: "r", name: "Rare", aff: 3, mat: 5 },
-  { k: "l", name: "Relic", aff: 4, mat: 10 },
+  { k: "n", name: "عادي", aff: 1, mat: 1 },
+  { k: "m", name: "جيّد", aff: 2, mat: 2 },
+  { k: "r", name: "نادر", aff: 3, mat: 5 },
+  { k: "l", name: "أثري", aff: 4, mat: 10 },
 ];
 
 export const BASES: Record<Slot, [string, number][]> = {
-  weapon: [["Rusted Blade", 4], ["Notched Axe", 5], ["Bone Cleaver", 6], ["Ember Sabre", 7]],
-  armor: [["Torn Hide", 3], ["Iron Plate", 4], ["Ashwood Mail", 5], ["Emberweave", 6]],
-  ring: [["Copper Band", 2], ["Sigil Ring", 3], ["Ashen Loop", 4], ["Ember Signet", 5]],
+  weapon: [["نصل صدئ", 4], ["فأس مثلوم", 5], ["ساطور عظمي", 6], ["سيف الجمر", 7]],
+  armor: [["جلد ممزّق", 3], ["درع حديدي", 4], ["زرد خشب الرماد", 5], ["نسيج الجمر", 6]],
+  ring: [["خاتم نحاسي", 2], ["خاتم الطلسم", 3], ["حلقة رمادية", 4], ["خاتم الجمر", 5]],
 };
 
 export const AFFIXES: { id: string; label: string; per: number }[] = [
-  { id: "atk", label: "attack", per: 0.85 },
-  { id: "def", label: "armour", per: 0.7 },
-  { id: "hp", label: "life", per: 3.6 },
-  { id: "crit", label: "crit chance", per: 0.3 },
-  { id: "lech", label: "leech", per: 0.2 },
-  { id: "spd", label: "move speed", per: 0.45 },
-  { id: "fire", label: "fire damage", per: 1.3 },
-  { id: "cold", label: "cold damage", per: 1.3 },
-  { id: "light", label: "lightning damage", per: 1.3 },
-  { id: "resist", label: "resistance", per: 0.32 },
-  { id: "mana", label: "maximum mana", per: 1.5 },
-  { id: "regen", label: "mana regen", per: 0.11 },
+  { id: "atk", label: "هجوم", per: 0.85 },
+  { id: "def", label: "درع", per: 0.7 },
+  { id: "hp", label: "صحة", per: 3.6 },
+  { id: "crit", label: "فرصة حاسمة", per: 0.3 },
+  { id: "lech", label: "امتصاص", per: 0.2 },
+  { id: "spd", label: "سرعة حركة", per: 0.45 },
+  { id: "fire", label: "ضرر ناري", per: 1.3 },
+  { id: "cold", label: "ضرر جليدي", per: 1.3 },
+  { id: "light", label: "ضرر صاعق", per: 1.3 },
+  { id: "resist", label: "مقاومة", per: 0.32 },
+  { id: "mana", label: "أقصى مانا", per: 1.5 },
+  { id: "regen", label: "تجدد المانا", per: 0.11 },
 ];
 
 export const APOOL: Record<Slot, string[]> = {
@@ -123,11 +126,11 @@ export interface ZoneDef {
 }
 
 export const ZONES: ZoneDef[] = [
-  { name: "Ashen Hollow", ilvl: 1, packs: 9, boss: "Hollow Warden", kinds: ["slime", "bat"], bossTile: MOBS.demon, w: 76, h: 76, rooms: 14 },
-  { name: "Saltmarsh Ruin", ilvl: 9, packs: 11, boss: "Drowned Priest", kinds: ["worm", "spider"], bossTile: MOBS.ghost, w: 84, h: 84, rooms: 16 },
-  { name: "Cinder Vault", ilvl: 18, packs: 13, boss: "Vault Construct", kinds: ["dwarf", "mummy"], bossTile: MOBS.dwarf, w: 92, h: 92, rooms: 18 },
-  { name: "Weeping Spire", ilvl: 28, packs: 15, boss: "Spire Seraph", kinds: ["ghost", "bat"], bossTile: MOBS.ghost, w: 98, h: 98, rooms: 20 },
-  { name: "Emberfall", ilvl: 40, packs: 17, boss: "The Last Ember", kinds: ["demon", "mummy"], bossTile: MOBS.demon, w: 104, h: 104, rooms: 22 },
+  { name: "جوف الرماد", ilvl: 1, packs: 9, boss: "حارس الجوف", kinds: ["slime", "bat"], bossTile: MOBS.demon, w: 76, h: 76, rooms: 14 },
+  { name: "خراب المستنقع المالح", ilvl: 9, packs: 11, boss: "الكاهن الغريق", kinds: ["worm", "spider"], bossTile: MOBS.ghost, w: 84, h: 84, rooms: 16 },
+  { name: "قبو الجمر", ilvl: 18, packs: 13, boss: "آلة القبو", kinds: ["dwarf", "mummy"], bossTile: MOBS.dwarf, w: 92, h: 92, rooms: 18 },
+  { name: "البرج الباكي", ilvl: 28, packs: 15, boss: "سيراف البرج", kinds: ["ghost", "bat"], bossTile: MOBS.ghost, w: 98, h: 98, rooms: 20 },
+  { name: "سقوط الجمر", ilvl: 40, packs: 17, boss: "الجمرة الأخيرة", kinds: ["demon", "mummy"], bossTile: MOBS.demon, w: 104, h: 104, rooms: 22 },
 ];
 
 export interface Room { x: number; y: number; w: number; h: number; cx: number; cy: number }
