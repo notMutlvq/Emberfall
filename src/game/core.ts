@@ -19,7 +19,7 @@ export const $ = (id: string): HTMLElement => {
 export const TW = 16;
 export const COLS = 12;
 export const HF = 64; // hero frame size
-export const ENV = { floors: 6, walls: 4, props: 10 } as const;
+export const ENV = { floors: 6, walls: 4, props: 14 } as const;
 export const ANIM = {
   idle: { row: 0, n: 4, fps: 6 },
   walk: { row: 1, n: 6, fps: 13 },

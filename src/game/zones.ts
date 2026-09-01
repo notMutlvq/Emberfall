@@ -10,9 +10,13 @@ import {
 import { SHEET, ENVI, PROPI } from "./assets.ts";
 
 function fillFloor(w: number, h: number, hub: boolean): number[][] {
+  // Mostly the base cobble tile (0) with occasional detail (1-3). The old
+  // "random tile every cell" made the floor read as visual noise, and
+  // variants 4-5 (near-black / flat grey) punched holes in it.
+  const chance = hub ? 0.09 : 0.14;
   const v = Array.from({ length: h }, () => new Array<number>(w).fill(0));
   for (let y = 0; y < h; y++)
-    for (let x = 0; x < w; x++) v[y][x] = hub ? rnd(0, 2) : rnd(0, ENV.floors - 1);
+    for (let x = 0; x < w; x++) v[y][x] = Math.random() < chance ? rnd(1, 3) : 0;
   return v;
 }
 
@@ -33,18 +37,19 @@ export function buildMap(): void {
     }
   for (let y = 1; y < Hd - 1; y++)
     for (let x = 0; x < Wd; x++)
-      if (Z.g[y][x] === 1 && Z.g[y + 1][x] === 0 && Math.random() < 0.06) {
+      if (Z.g[y][x] === 1 && Z.g[y + 1][x] === 0 && Math.random() < 0.03) {
         const [sx, sy] = tsrc(125);
         g.drawImage(SHEET, sx, sy, TW, TW, x * TW, y * TW, TW, TW);
       }
+  // graveyard decorations — a handful per room, hugging the walls
   (Z.rooms || []).forEach((r) => {
-    const n = Math.floor((r.w * r.h) / 34);
+    const n = clamp(Math.round((r.w * r.h) / 70), 1, 4);
     for (let i = 0; i < n; i++) {
       const x = rnd(r.x + 1, r.x + r.w - 2);
       const y = rnd(r.y + 1, r.y + r.h - 2);
       const edge = x <= r.x + 2 || x >= r.x + r.w - 3 || y <= r.y + 2 || y >= r.y + r.h - 3;
       if (!edge || Z.g[y][x] === 1) continue;
-      g.drawImage(PROPI, rnd(0, ENV.props - 1) * 32, 0, 32, 32, x * TW - 8, y * TW - 14, 32, 32);
+      g.drawImage(PROPI, rnd(0, ENV.props - 1) * 32, 0, 32, 32, x * TW - 8, y * TW - 18, 32, 32);
     }
   });
   Z.map = c;
