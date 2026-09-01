@@ -167,6 +167,8 @@ export function genZone(zi: number): void {
     objs: [
       { t: "chest", x: cr.cx + 0.5, y: cr.cy + 0.5, label: "افتح الصندوق" },
       { t: "npc", x: nr.cx + 1.5, y: nr.cy + 0.5, tile: CHARS.scholar, npcKind: "scholar", label: "تحدّث إلى العالِمة" },
+      // the way back in — the entrance you spawned at. interact -> toHub().
+      { t: "gate", x: rooms[0].cx - 0.7, y: rooms[0].cy + 0.5, label: "عُد إلى المخيّم" },
     ],
   };
   P.x = rooms[0].cx + 0.5;
@@ -199,7 +201,9 @@ export function newMob(D: ZoneDef, x: number, y: number, o?: NewMobOpts): Mob {
     atk: Math.round(8 * (1 + lvl * 0.42) * atkMul),
     def: Math.round(3.5 * (1 + lvl * 0.34)),
     r: boss ? 0.85 : elite ? 0.55 : 0.42,
-    spd: (boss ? 1.7 : elite ? 1.75 : 1.85) + Math.random() * 0.35,
+    // bumped from the prototype's 1.7/1.75/1.85 — see the player-speed note
+    // in combat.update(). Chill still halves this (cold builds stay strong).
+    spd: (boss ? 2.5 : elite ? 2.6 : 2.75) + Math.random() * 0.4,
     cd: Math.random(),
     agro: false,
     flip: false,

@@ -41,7 +41,10 @@ export function update(dt: number): void {
   const Z = W.Z;
   const st = stats();
   const C = CLASSES[S.cls!];
-  const spd = (5.0 + st.spd * 0.04) * (P.dash > 0 ? 3.2 : 1);
+  // Rebalanced from the prototype's 5.0: the player was ~2.7x mob speed and
+  // could ignore everything. Now ~1.5x — you can still kite and reposition,
+  // but packs close the gap. Dash (x3.2) is still the panic button.
+  const spd = (4.2 + st.spd * 0.045) * (P.dash > 0 ? 3.2 : 1);
   let dx = joy.dx;
   let dy = joy.dy;
   if (keys.size) {

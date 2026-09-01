@@ -5,6 +5,7 @@
 import { S, W, ZONES, rnd, $, type Obj, type ZoneDef } from "./core.ts";
 import { toast, lootMsg } from "./hud.ts";
 import { dropLoot } from "./combat.ts";
+import { toHub } from "./state.ts";
 import { go, switchBagTab, paintAll, popup, closeBtn } from "../ui/sheets.ts";
 import { t } from "../i18n/index.ts";
 
@@ -74,8 +75,10 @@ export function interact(o: Obj | null): void {
     go("gear");
     switchBagTab("stash");
   } else if (o.t === "anvil") go("craft");
-  else if (o.t === "gate") go("maps");
-  else if (o.t === "chest") {
+  else if (o.t === "gate") {
+    if (Z.hub) go("maps"); // the camp gate opens the Atlas / travel list
+    else return toHub(); // a dungeon gate is the way back out
+  } else if (o.t === "chest") {
     o.used = true;
     Z.chestFound = true;
     S.gold += Math.round(90 * (1 + Z.d.ilvl * 0.35));

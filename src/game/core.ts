@@ -85,10 +85,27 @@ export const RARITY: { k: RarityKey; name: string; aff: number; mat: number }[] 
   { k: "l", name: "أثري", aff: 4, mat: 10 },
 ];
 
-export const BASES: Record<Slot, [string, number][]> = {
-  weapon: [["نصل صدئ", 4], ["فأس مثلوم", 5], ["ساطور عظمي", 6], ["سيف الجمر", 7]],
-  armor: [["جلد ممزّق", 3], ["درع حديدي", 4], ["زرد خشب الرماد", 5], ["نسيج الجمر", 6]],
-  ring: [["خاتم نحاسي", 2], ["خاتم الطلسم", 3], ["حلقة رمادية", 4], ["خاتم الجمر", 5]],
+/* base[slot][tier] — tier = min(3, floor(ilvl/11)). Several names per tier;
+ * makeItem picks one at random for variety. */
+export const BASES: Record<Slot, { names: string[]; base: number }[]> = {
+  weapon: [
+    { names: ["نصل صدئ", "خنجر مثلوم", "هراوة خشبية"], base: 4 },
+    { names: ["فأس مثلوم", "سيف قصير", "مطرقة حديدية"], base: 5 },
+    { names: ["ساطور عظمي", "سيف طويل", "معول حرب"], base: 6 },
+    { names: ["سيف الجمر", "نصل اللهب", "حربة الجمر"], base: 7 },
+  ],
+  armor: [
+    { names: ["جلد ممزّق", "قميص مبطّن", "درع خشبي"], base: 3 },
+    { names: ["درع حديدي", "زرد خفيف", "صدرية جلدية"], base: 4 },
+    { names: ["زرد خشب الرماد", "درع صفائحي", "درع مسلسل"], base: 5 },
+    { names: ["نسيج الجمر", "درع الجمر", "زرد اللهب"], base: 6 },
+  ],
+  ring: [
+    { names: ["خاتم نحاسي", "حلقة برونزية", "خاتم عظمي"], base: 2 },
+    { names: ["خاتم الطلسم", "حلقة فضية", "خاتم منقوش"], base: 3 },
+    { names: ["حلقة رمادية", "خاتم ذهبي", "طوق سحري"], base: 4 },
+    { names: ["خاتم الجمر", "خاتم اللهب", "حلقة الجمرة"], base: 5 },
+  ],
 };
 
 export const AFFIXES: { id: string; label: string; per: number }[] = [

@@ -43,14 +43,14 @@ export const ABIL: Record<ClassKey, Ability[]> = {
         { n: "زخم", d: "-15% انتظار", m: { cd: 15 } },
         { n: "زوبعة", d: "يضرب مرتين", m: { hits: 1 } },
       ) },
-    { id: "brand", name: "وصمة\nاللهب", lvl: 1, type: "nova", el: "fire", cd: 9000, mult: 2.1, r: 2.9,
+    { id: "brand", name: "وصمة\nاللهب", lvl: 1, type: "nova", el: "fire", cd: 7500, mult: 2.3, r: 2.9,
       up: mkUp(
         { n: "جمر متّقد", d: "+40% ضرر حرق", m: { burn: 40 } },
         { n: "لهب أوسع", d: "+25% نطاق", m: { rad: 25 } },
         { n: "إشعال", d: "-18% انتظار", m: { cd: 18 } },
         { n: "حريق هائج", d: "ينتشر الحرق عند القتل", m: { spread: 1 } },
       ) },
-    { id: "rally", name: "نداء", lvl: 3, type: "heal", el: "none", cd: 18000, heal: 0.28,
+    { id: "rally", name: "نداء", lvl: 3, type: "heal", el: "none", cd: 18000, heal: 0.32,
       up: mkUp(
         { n: "جرعة عميقة", d: "+35% شفاء", m: { heal: 35 } },
         { n: "نَفَس ثانٍ", d: "+8% صحة", m: { gHp: 8 } },
@@ -76,11 +76,11 @@ export const ABIL: Record<ClassKey, Ability[]> = {
         { n: "احتراق طويل", d: "+3ث مدة", m: { dur: 3 } },
         { n: "لَفْح", d: "+35% ضرر", m: { dmg: 35 } },
         { n: "نار عظيمة", d: "+30% نطاق", m: { rad: 30 } },
-        { n: "سيّد الجمر", d: "+60% ضرر ناري أثناء التفعيل", m: { gFire: 60 } },
+        { n: "سيّد الجمر", d: "+40% ضرر ناري أثناء التفعيل", m: { gFire: 40 } },
       ) },
   ],
   ranger: [
-    { id: "volley", name: "وابل", lvl: 1, type: "multi", el: "phys", cd: 4500, mult: 1.4, n: 5, spread: 0.55,
+    { id: "volley", name: "وابل", lvl: 1, type: "multi", el: "phys", cd: 4500, mult: 1.2, n: 5, spread: 0.55,
       up: mkUp(
         { n: "أعمدة إضافية", d: "+2 سهم", m: { proj: 2 } },
         { n: "مُشوّك", d: "+25% ضرر", m: { dmg: 25 } },
@@ -101,7 +101,7 @@ export const ABIL: Record<ClassKey, Ability[]> = {
         { n: "تعافٍ", d: "-20% انتظار", m: { cd: 20 } },
         { n: "تدحرج طيفي", d: "لا يمكن مسّك للحظة", m: { iframe: 1 } },
       ) },
-    { id: "inova", name: "انفجار\nجليدي", lvl: 6, type: "nova", el: "cold", cd: 8000, mult: 2.2, r: 2.8,
+    { id: "inova", name: "انفجار\nجليدي", lvl: 6, type: "nova", el: "cold", cd: 8000, mult: 2.5, r: 2.8,
       up: mkUp(
         { n: "صقيع أوسع", d: "+30% نطاق", m: { rad: 30 } },
         { n: "برد قارس", d: "يدوم التجميد +1.5ث", m: { chill: 1.5 } },
@@ -131,7 +131,7 @@ export const ABIL: Record<ClassKey, Ability[]> = {
         { n: "مدى القوس", d: "+2 قفزة", m: { jumps: 2 } },
         { n: "سيّد العاصفة", d: "+50% ضرر صاعق", m: { gLight: 50 } },
       ) },
-    { id: "meteor", name: "نيزك", lvl: 1, type: "ground", el: "fire", cd: 10000, mult: 3.2, r: 2.4,
+    { id: "meteor", name: "نيزك", lvl: 1, type: "ground", el: "fire", cd: 10000, mult: 2.9, r: 2.4,
       up: mkUp(
         { n: "ارتطام أوسع", d: "+30% نطاق", m: { rad: 30 } },
         { n: "احتراق", d: "+50% ضرر حرق", m: { burn: 50 } },

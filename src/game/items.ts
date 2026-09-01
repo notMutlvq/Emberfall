@@ -26,10 +26,10 @@ export function makeItem(ilvl: number, slot?: Slot | null, forceRar?: number): I
   const s: Slot = slot || pick<Slot>(["weapon", "armor", "ring"]);
   const ri = forceRar !== undefined ? forceRar : rollRarity(ilvl);
   const tier = Math.min(3, Math.floor(ilvl / 11));
-  const [bn, bv] = BASES[s][tier];
+  const bt = BASES[s][tier];
   const it: Item = {
-    uid: S.uid++, slot: s, ilvl, rar: ri, name: bn,
-    base: Math.max(1, Math.round(bv * (1 + ilvl * 0.26))), plus: 0, affixes: [],
+    uid: S.uid++, slot: s, ilvl, rar: ri, name: pick(bt.names),
+    base: Math.max(1, Math.round(bt.base * (1 + ilvl * 0.26))), plus: 0, affixes: [],
   };
   const pool = AFFIXES.filter((a) => APOOL[s].includes(a.id));
   for (let i = 0; i < RARITY[ri].aff; i++) {
