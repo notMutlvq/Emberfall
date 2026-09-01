@@ -3,6 +3,9 @@ dist
 dist-ssr
 *.local
 .claude/
+
+# Raw art pack — pending licensing confirmation, integrated in stage 5
+/Asset_1/
 .DS_Store
 .env
 .env.*

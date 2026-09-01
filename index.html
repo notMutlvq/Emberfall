@@ -88,7 +88,36 @@
     <div class="statbox" id="overstats"></div>
     <div class="statbox" id="overbest"></div>
     <button class="btn go wide" data-act="newrun" style="padding:12px">Begin a new run</button>
+    <button class="btn wide" id="btn-over-menu" style="padding:10px;margin-top:8px">Main menu</button>
   </div>
+
+  <div id="auth">
+    <h1 class="pixel">EMBERFALL</h1>
+    <p class="s">Log in to play. Your best runs go on the board.</p>
+    <div class="tabs" style="margin-bottom:12px">
+      <div class="tab on" data-authtab="login">Log in</div>
+      <div class="tab" data-authtab="signup">Sign up</div>
+    </div>
+    <div class="slab">Username</div>
+    <input id="authuser" maxlength="20" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="wanderer">
+    <div class="slab" style="margin-top:10px">Password</div>
+    <input id="authpass" type="password" autocomplete="current-password" placeholder="••••••">
+    <p id="autherr" class="autherr"></p>
+    <p id="authwarn" class="authwarn">Heads up: a forgotten password can't be recovered — there's no email on file.</p>
+    <button class="btn go wide" id="authgo" style="padding:12px;margin-top:8px">Log in</button>
+  </div>
+
+  <div id="mainmenu">
+    <h1 class="pixel">EMBERFALL</h1>
+    <p class="s" id="mm-user">— —</p>
+    <button class="btn go wide" id="mm-newrun" style="padding:12px">New run</button>
+    <div class="statbox" style="margin-top:14px">
+      <div class="slab">Leaderboard</div>
+      <div id="mm-board" class="meta">Top runs will appear here once the leaderboard ships.</div>
+    </div>
+    <button class="btn wide" id="mm-logout" style="margin-top:10px;display:none">Log out</button>
+  </div>
+
   <div id="pick">
     <h1 class="pixel">EMBERFALL</h1>
     <p class="s">A roguelike descent. Death ends the run — only the stash survives.</p>

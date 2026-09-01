@@ -131,13 +131,19 @@ border:1px solid var(--gold);padding:7px 13px;font-size:11px;opacity:0;transitio
 #loot{position:absolute;left:9px;bottom:250px;z-index:5;font-size:10px;pointer-events:none}
 #loot div{color:var(--gold);animation:fade 3s forwards}
 @keyframes fade{0%,60%{opacity:1}100%{opacity:0}}
-#pick{position:absolute;inset:0;z-index:20;background:var(--sheet);padding:20px;display:flex;flex-direction:column;justify-content:center;overflow-y:auto}
-#pick h1{font-family:"Silkscreen",monospace;font-size:22px;margin-bottom:2px;color:var(--gold)}
-#pick p.s{color:var(--dim);font-size:11px;margin-bottom:14px}
+#pick,#auth,#mainmenu{position:absolute;inset:0;background:var(--sheet);padding:20px;display:none;flex-direction:column;justify-content:center;overflow-y:auto}
+#pick{z-index:20}
+#mainmenu{z-index:24}
+#auth{z-index:25}
+#pick h1,#auth h1,#mainmenu h1{font-family:"Silkscreen",monospace;font-size:22px;margin-bottom:2px;color:var(--gold)}
+#pick p.s,#auth p.s,#mainmenu p.s{color:var(--dim);font-size:11px;margin-bottom:14px}
 #nameRow{margin-bottom:14px}
-#pname{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--bone);
+#pname,#authuser,#authpass{width:100%;background:var(--panel);border:1px solid var(--line);color:var(--bone);
  font-family:inherit;font-size:13px;padding:10px;outline:none}
-#pname:focus{border-color:var(--gold)}
+#pname:focus,#authuser:focus,#authpass:focus{border-color:var(--gold)}
+.autherr{color:var(--blood);font-size:10px;min-height:13px;margin-top:8px}
+.authwarn{color:var(--dim);font-size:10px;margin-top:6px;display:none}
+#mm-user{color:var(--dim);font-size:11px;margin-bottom:14px;text-align:center}
 .cchoice.on{border-color:var(--gold);background:var(--panel2)}
 .cbars{font-size:9px;color:var(--dim);margin-top:4px;line-height:1.5}
 .cbars b{font-weight:400;color:var(--bone)}

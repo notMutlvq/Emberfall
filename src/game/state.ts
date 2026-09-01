@@ -11,6 +11,7 @@ import { genHub, genZone } from "./zones.ts";
 import { buildSkills, toast } from "./hud.ts";
 import { autoSlot } from "./combat.ts";
 import { go, paintAll } from "../ui/sheets.ts";
+import { showScreen } from "../ui/screens.ts";
 
 export function newRunState(): void {
   S.lv = 1;
@@ -50,7 +51,7 @@ export function newRun(): void {
   ($("over") as HTMLElement).style.display = "none";
   S.pend = null;
   document.querySelectorAll(".cchoice").forEach((c) => c.classList.remove("on"));
-  ($("pick") as HTMLElement).style.display = "flex";
+  showScreen("pick");
 }
 
 export function toHub(): void {

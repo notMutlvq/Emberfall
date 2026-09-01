@@ -10,6 +10,7 @@ import { toast, lootMsg } from "../game/hud.ts";
 import { newRunState } from "../game/state.ts";
 import { resize } from "../game/render.ts";
 import { startLoop } from "../game/engine.ts";
+import { showScreen } from "./screens.ts";
 
 function bar3(v: number, col: string): string {
   return `<span class="bar3"><i style="width:${v * 20}%;background:${col}"></i></span>`;
@@ -41,7 +42,7 @@ export function beginRun(): void {
   if (!nm) return toast("Enter a name.");
   S.name = nm;
   S.cls = S.pend;
-  ($("pick") as HTMLElement).style.display = "none";
+  showScreen("game");
   newRunState();
   resize();
   lootMsg("Ember Camp. Take a bounty, then the gate.");
