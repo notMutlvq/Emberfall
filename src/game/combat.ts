@@ -347,6 +347,7 @@ function killMob(m: Mob): void {
   if (!Z.mobs.includes(m)) return;
   Z.mobs = Z.mobs.filter((x) => x !== m);
   sfx("mob_die", { vol: m.boss ? 1 : m.elite ? 0.8 : 0.55 });
+  if (m.boss || m.elite) bang(m.x, m.y, m.burn > 0 ? "fire" : "phys", m.boss ? 3.2 : 1.8);
   const spread = abList().some((a) => abMods(a).spread && a.el === "fire");
   if (spread && m.burn > 0)
     Z.mobs.forEach((o) => {
@@ -493,6 +494,12 @@ function fx(x: number, y: number, v: number | string, c: string): void {
   W.Z.fx.push({ x, y: y - 0.6, v, c, t: 0.8 });
 }
 
+/* sprite blast — fire / ice / gold burst by element, over ~0.5s */
+function bang(x: number, y: number, el: string | undefined, scale: number): void {
+  const anim = el === "fire" ? "fire" : el === "cold" ? "ice" : "burst";
+  W.Z.fx.push({ x, y, anim, animDur: 0.5, animScale: scale, t: 0.5, c: "#fff" });
+}
+
 export function shoot(
   tx: number, ty: number, dmg: number, el: string | undefined, st: Stats, pierce: number, am: AbMods | null,
 ): void {
@@ -559,6 +566,7 @@ function activateAbility(ab: Ability, m: AbMods, st: Stats, dmg: number, hits: n
     Z.mobs.slice().forEach((q) => {
       if (Math.hypot(P.x - q.x, P.y - q.y) < 2.2) for (let k = 0; k < hits; k++) hitMob(q, dmg, st, ab.el, m);
     });
+    bang(P.x, P.y, ab.el, 2.2);
   } else if (ab.type === "nova") {
     const r = ab.r! * (1 + m.rad / 100);
     for (let k = 0; k < hits; k++)
@@ -566,6 +574,7 @@ function activateAbility(ab: Ability, m: AbMods, st: Stats, dmg: number, hits: n
         if (Math.hypot(P.x - q.x, P.y - q.y) < r) hitMob(q, dmg, st, ab.el, m);
       });
     Z.fx.push({ x: P.x, y: P.y, ring: r, t: 0.3, c: ELCOL[ab.el] });
+    bang(P.x, P.y, ab.el, r * 1.5);
   } else if (ab.type === "shot") {
     if (!tgt) return;
     shoot(tgt.x, tgt.y, dmg, ab.el, st, (ab.pierce || 1) + m.pierce, m);
@@ -598,10 +607,14 @@ function activateAbility(ab: Ability, m: AbMods, st: Stats, dmg: number, hits: n
     }
   } else if (ab.type === "ground") {
     const t = tgt || { x: P.x + P.fx * 3, y: P.y + P.fy * 3 };
-    Z.fx.push({ x: t.x, y: t.y, ground: true, r: ab.r! * (1 + m.rad / 100), dmg, el: ab.el, st, am: m, t: 0.6, c: ELCOL[ab.el] });
+    const r = ab.r! * (1 + m.rad / 100);
+    Z.fx.push({ x: t.x, y: t.y, ground: true, r, dmg, el: ab.el, st, am: m, t: 0.6, c: ELCOL[ab.el] });
+    bang(t.x, t.y, ab.el, r * 1.6);
   } else if (ab.type === "aura") {
     S.auras[ab.id] = (ab.dur || 6) + m.dur;
-    Z.fx.push({ x: P.x, y: P.y, ring: (ab.r || 2.4) * (1 + m.rad / 100), t: 0.4, c: ELCOL[ab.el] });
+    const r = (ab.r || 2.4) * (1 + m.rad / 100);
+    Z.fx.push({ x: P.x, y: P.y, ring: r, t: 0.4, c: ELCOL[ab.el] });
+    bang(P.x, P.y, ab.el, r);
   }
 }
 

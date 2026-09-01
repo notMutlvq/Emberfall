@@ -14,6 +14,9 @@ import hero3Url from "../assets/hero3.png";
 import bossUrl from "../assets/boss.png";
 import weaponsUrl from "../assets/weapons.png";
 import potionsUrl from "../assets/potions.png";
+import fxFireUrl from "../assets/fx_fire.png";
+import fxBurstUrl from "../assets/fx_burst.png";
+import fxIceUrl from "../assets/fx_ice.png";
 
 function img(src: string): HTMLImageElement {
   const im = new Image();
@@ -33,7 +36,16 @@ export const heroTier = (lv: number): number => (lv >= 15 ? 2 : lv >= 7 ? 1 : 0)
 export const WEAPONS = img(weaponsUrl); // 10x10
 export const POTIONS = img(potionsUrl); // 8x6
 
-const ALL = [SHEET, ENVI, PROPI, BOSSI, WEAPONS, POTIONS, ...HERO_TIERS];
+/* CraftPix effect strips — 10 frames of 96px (see scripts/pack-fx.mjs).
+ * Keyed by the name pushed as Fx.anim. */
+export const FX_STRIPS: Record<string, { img: HTMLImageElement; n: number }> = {
+  fire: { img: img(fxFireUrl), n: 10 },
+  burst: { img: img(fxBurstUrl), n: 10 },
+  ice: { img: img(fxIceUrl), n: 10 },
+};
+export const FX_CELL = 96;
+
+const ALL = [SHEET, ENVI, PROPI, BOSSI, WEAPONS, POTIONS, ...HERO_TIERS, ...Object.values(FX_STRIPS).map((s) => s.img)];
 
 /* per class: one tinted canvas per hero tier */
 export const HEROC: Partial<Record<ClassKey, HTMLCanvasElement[]>> = {};

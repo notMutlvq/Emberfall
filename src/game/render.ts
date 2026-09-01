@@ -3,7 +3,7 @@
  * Ported verbatim from emberfall-v9.html.
  */
 import { S, P, W, $, clamp, tsrc, TW, ANIM, T, ELCOL, type ClassKey } from "./core.ts";
-import { SHEET, HEROC, HERO_TIERS, heroTier, BOSSI, RINGIMG } from "./assets.ts";
+import { SHEET, HEROC, HERO_TIERS, heroTier, BOSSI, RINGIMG, FX_STRIPS, FX_CELL } from "./assets.ts";
 import { abById, abMods } from "./abilities.ts";
 
 const cv = $("cv") as HTMLCanvasElement;
@@ -207,6 +207,15 @@ export function draw(): void {
   ctx.globalAlpha = 1;
   ctx.lineWidth = 2;
   Z.fx.forEach((f) => {
+    if (f.anim) {
+      const strip = FX_STRIPS[f.anim];
+      if (strip) {
+        const dur = f.animDur ?? 0.5;
+        const fr = Math.min(strip.n - 1, Math.max(0, Math.floor((1 - f.t / dur) * strip.n)));
+        const sz = (f.animScale ?? 2) * TS;
+        ctx.drawImage(strip.img, fr * FX_CELL, 0, FX_CELL, FX_CELL, SX(f.x) - sz / 2, SY(f.y) - sz * 0.62, sz, sz);
+      }
+    }
     if (f.slash) {
       ctx.globalAlpha = f.t / 0.15;
       ctx.strokeStyle = f.c;

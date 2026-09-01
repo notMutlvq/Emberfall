@@ -177,6 +177,7 @@ export interface Fx {
   v?: number | string;
   ground?: boolean; done?: boolean; r?: number; dmg?: number; st?: Stats; el?: string; am?: AbMods | null;
   ring?: number; line?: [number, number]; slash?: boolean;
+  anim?: string; animDur?: number; animScale?: number;
 }
 export interface Loot {
   x: number; y: number; b: number;
