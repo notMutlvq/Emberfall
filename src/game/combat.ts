@@ -71,7 +71,7 @@ export function update(dt: number): void {
     P.fi = 0;
     P.ft = 0;
   }
-  const A = { idle: { n: 4, fps: 6 }, walk: { n: 6, fps: 13 }, attack: { n: 6, fps: 17 } }[P.st];
+  const A = { idle: { n: 4, fps: 6 }, walk: { n: 6, fps: 13 }, attack: { n: 8, fps: 20 } }[P.st];
   P.ft += dt;
   while (P.ft > 1 / A.fps) {
     P.ft -= 1 / A.fps;

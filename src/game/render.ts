@@ -3,7 +3,7 @@
  * Ported verbatim from emberfall-v9.html.
  */
 import { S, P, W, $, clamp, tsrc, TW, ANIM, T, ELCOL, type ClassKey } from "./core.ts";
-import { SHEET, HEROC, HEROI, BOSSI, RINGIMG } from "./assets.ts";
+import { SHEET, HEROC, HERO_TIERS, heroTier, BOSSI, RINGIMG } from "./assets.ts";
 import { abById, abMods } from "./abilities.ts";
 
 const cv = $("cv") as HTMLCanvasElement;
@@ -28,7 +28,8 @@ function ent(i: number, cx: number, cy: number, sz: number, flip: boolean): void
 }
 
 function drawHero(cx: number, cy: number, size: number): void {
-  const img = HEROC[S.cls as ClassKey] || HEROI;
+  const sheets = HEROC[S.cls as ClassKey] ?? HERO_TIERS;
+  const img = sheets[heroTier(S.lv)] ?? sheets[0];
   const A = ANIM[P.st];
   const sx = P.fi * 64;
   const sy = (A.row * 4 + P.dir) * 64;

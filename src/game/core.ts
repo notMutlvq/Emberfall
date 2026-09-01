@@ -23,7 +23,7 @@ export const ENV = { floors: 6, walls: 4, props: 10 } as const;
 export const ANIM = {
   idle: { row: 0, n: 4, fps: 6 },
   walk: { row: 1, n: 6, fps: 13 },
-  attack: { row: 2, n: 6, fps: 17 },
+  attack: { row: 2, n: 8, fps: 20 },
 } as const;
 export type AnimKey = keyof typeof ANIM;
 

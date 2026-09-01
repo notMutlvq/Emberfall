@@ -8,7 +8,9 @@ import { TW, tsrc, HF, type ClassKey, type Item } from "./core.ts";
 import tilesheetUrl from "../assets/tilesheet.png";
 import envUrl from "../assets/env.png";
 import propsUrl from "../assets/props.png";
-import heroUrl from "../assets/hero.png";
+import hero1Url from "../assets/hero1.png";
+import hero2Url from "../assets/hero2.png";
+import hero3Url from "../assets/hero3.png";
 import bossUrl from "../assets/boss.png";
 import weaponsUrl from "../assets/weapons.png";
 import potionsUrl from "../assets/potions.png";
@@ -22,28 +24,32 @@ function img(src: string): HTMLImageElement {
 export const SHEET = img(tilesheetUrl);
 export const ENVI = img(envUrl);
 export const PROPI = img(propsUrl);
-export const HEROI = img(heroUrl);
 export const BOSSI = img(bossUrl);
+/* CraftPix Swordsman lvl1-3 atlases (see scripts/pack-hero.mjs). Tier is
+ * picked from the player level — see heroTier(). */
+export const HERO_TIERS: HTMLImageElement[] = [img(hero1Url), img(hero2Url), img(hero3Url)];
+export const heroTier = (lv: number): number => (lv >= 15 ? 2 : lv >= 7 ? 1 : 0);
 /* CraftPix 32px icon atlases (see scripts/pack-icons.mjs) */
 export const WEAPONS = img(weaponsUrl); // 10x10
 export const POTIONS = img(potionsUrl); // 8x6
 
-const ALL = [SHEET, ENVI, PROPI, HEROI, BOSSI, WEAPONS, POTIONS];
+const ALL = [SHEET, ENVI, PROPI, BOSSI, WEAPONS, POTIONS, ...HERO_TIERS];
 
-export const HEROC: Partial<Record<ClassKey, HTMLCanvasElement>> = {};
+/* per class: one tinted canvas per hero tier */
+export const HEROC: Partial<Record<ClassKey, HTMLCanvasElement[]>> = {};
 const TINTS: Record<ClassKey, [string, number]> = {
   warrior: ["#ff7a4a", 0.16],
   ranger: ["#6fd08d", 0.2],
   mage: ["#b48cff", 0.22],
 };
 
-function tintHero(col: string, alpha: number): HTMLCanvasElement {
+function tintHero(src: HTMLImageElement, col: string, alpha: number): HTMLCanvasElement {
   const c = document.createElement("canvas");
-  c.width = HEROI.width;
-  c.height = HEROI.height;
+  c.width = src.width;
+  c.height = src.height;
   const g = c.getContext("2d")!;
   g.imageSmoothingEnabled = false;
-  g.drawImage(HEROI, 0, 0);
+  g.drawImage(src, 0, 0);
   if (alpha) {
     g.globalCompositeOperation = "source-atop";
     g.globalAlpha = alpha;
@@ -141,7 +147,9 @@ export function heroPortrait(cls: ClassKey): string {
   c.width = c.height = 64;
   const g = c.getContext("2d")!;
   g.imageSmoothingEnabled = false;
-  g.drawImage(HEROC[cls] || HEROI, 0, 0, HF, HF, 0, 0, 64, 64);
+  const src = HEROC[cls]?.[0] ?? HERO_TIERS[0];
+  // idle-down frame 0
+  g.drawImage(src, 0, 0, HF, HF, 0, 0, 64, 64);
   return c.toDataURL();
 }
 
@@ -155,7 +163,7 @@ function assetReady(): void {
   if (++loaded < ALL.length) return;
   for (const k in TINTS) {
     const key = k as ClassKey;
-    HEROC[key] = tintHero(TINTS[key][0], TINTS[key][1]);
+    HEROC[key] = HERO_TIERS.map((im) => tintHero(im, TINTS[key][0], TINTS[key][1]));
   }
   readyResolve();
 }
