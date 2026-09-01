@@ -46,8 +46,9 @@ export const T = {
 } as const;
 
 export const CHARS = { warrior: 96, ranger: 112, mage: 84, quarter: 86, scholar: 99 } as const;
+/* index into src/assets/mobs.png (see scripts/pack-mobs.mjs) */
 export const MOBS: Record<string, number> = {
-  slime: 108, mummy: 109, demon: 110, dwarf: 111, bat: 120, ghost: 121, spider: 122, worm: 123,
+  slime: 0, mummy: 1, demon: 2, dwarf: 3, bat: 4, ghost: 5, spider: 6, worm: 7,
 };
 export const PROPS = [101, 102, 66, 64, 65, 63];
 

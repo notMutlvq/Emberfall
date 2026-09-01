@@ -3,7 +3,7 @@
  * Ported verbatim from emberfall-v9.html.
  */
 import { S, P, W, $, clamp, tsrc, TW, ANIM, T, ELCOL, type ClassKey } from "./core.ts";
-import { SHEET, HEROC, HERO_TIERS, heroTier, BOSSI, RINGIMG, FX_STRIPS, FX_CELL } from "./assets.ts";
+import { SHEET, HEROC, HERO_TIERS, heroTier, BOSSI, RINGIMG, FX_STRIPS, FX_CELL, MOBSHEET } from "./assets.ts";
 import { abById, abMods } from "./abilities.ts";
 
 const cv = $("cv") as HTMLCanvasElement;
@@ -24,6 +24,14 @@ function ent(i: number, cx: number, cy: number, sz: number, flip: boolean): void
   ctx.translate(cx, cy);
   if (flip) ctx.scale(-1, 1);
   ctx.drawImage(SHEET, sx, sy, TW, TW, -sz / 2, -sz * 0.92, sz, sz);
+  ctx.restore();
+}
+
+function mobSprite(idx: number, cx: number, cy: number, sz: number, flip: boolean): void {
+  ctx.save();
+  ctx.translate(cx, cy);
+  if (flip) ctx.scale(-1, 1);
+  ctx.drawImage(MOBSHEET, idx * 32, 0, 32, 32, -sz / 2, -sz * 0.9, sz, sz);
   ctx.restore();
 }
 
@@ -174,7 +182,7 @@ export function draw(): void {
       ctx.globalAlpha = 1;
     }
     if (m.boss) ctx.drawImage(BOSSI, SX(m.x) - sz * 0.85, SY(m.y) - sz * 1.5 - bob, sz * 1.7, sz * 1.7);
-    else ent(m.tile, SX(m.x), SY(m.y) - bob, sz, m.flip);
+    else mobSprite(m.tile, SX(m.x), SY(m.y) - bob, sz, m.flip);
     if (m.burn > 0) {
       ctx.fillStyle = "rgba(224,122,60,.6)";
       for (let i = 0; i < 3; i++) ctx.fillRect(SX(m.x) - 7 + i * 6, SY(m.y) - sz * 0.6 - Math.random() * 9, 2, 4);
