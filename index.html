@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Emberfall</title>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+<div id="phone">
+<div id="view">
+  <canvas id="cv"></canvas>
+  <div id="hud">
+    <div class="row spread">
+      <div><div id="zonename" class="pixel">—</div><div id="zonemeta"></div></div>
+      <div class="purse">gold <b id="pgold">0</b> · shard <i id="pshard">0</i></div>
+    </div>
+    <div id="hpwrap"><div id="hpbar"></div></div>
+    <div id="mpwrap"><div id="mpbar"></div></div>
+    <div id="xpwrap"><div id="xpbar"></div></div>
+    <div id="objective"></div>
+  </div>
+  <div id="loot"></div>
+  <div id="stick"><div id="sbase"></div><div id="sknob"></div></div>
+  <div id="skills"></div>
+  <button id="potion" data-act="potion">0</button>
+  <button id="interact"></button>
+
+  <div class="sheet" id="sh-gear">
+    <div class="shead"><h2>Bag</h2><p>Tap an item to inspect, equip, enhance or salvage.</p></div>
+    <div class="sbody">
+      <div id="eqstrip"></div>
+      <div class="statbox"><div class="slab">Stats</div><div id="stats"></div></div>
+      <div class="tabs"><div class="tab on" data-bt="bag">Bag</div><div class="tab" data-bt="stash">Stash</div></div>
+      <div id="bagwrap">
+        <div class="row spread" style="margin-bottom:7px">
+          <span class="slab" style="margin:0" id="bagcount"></span>
+          <button class="btn" data-act="salvageall" style="padding:5px 8px;font-size:10px">Salvage commons</button>
+        </div>
+        <div id="grid"></div>
+      </div>
+      <div id="stashwrap" style="display:none">
+        <div class="slab" id="stashnote"></div><div id="stashgrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sheet" id="sh-tree">
+    <div class="shead"><h2 id="treetitle">Abilities</h2>
+      <p>Points <span id="pts">0</span> · abilities unlock by level · each upgrade tier needs half the tier before it</p></div>
+    <div class="sbody">
+      <div class="slab">Equipped — tap a slot, then tap an ability</div>
+      <div id="abslots"></div>
+      <div class="slab">Abilities</div>
+      <div class="ablist" id="ablist"></div>
+      <div id="abtree"></div>
+    </div>
+  </div>
+
+  <div class="sheet" id="sh-craft">
+    <div class="shead"><h2>Workbench</h2><p>Select an item, then work its affixes.</p></div>
+    <div class="sbody">
+      <div class="statbox"><div class="slab">Materials</div><div id="mats"></div></div>
+      <div class="tabs">
+        <div class="tab on" data-craft="reroll">Reroll</div>
+        <div class="tab" data-craft="lock">Lock</div>
+        <div class="tab" data-craft="tier">Upgrade</div>
+      </div>
+      <div id="cgrid" style="margin-bottom:12px"></div>
+      <div id="cpanel"></div>
+    </div>
+  </div>
+
+  <div class="sheet" id="sh-maps">
+    <div class="shead"><h2>Atlas</h2><p>Death ends the run. The stash is all that carries over.</p></div>
+    <div class="sbody">
+      <div class="statbox"><div class="slab">Bounties</div><div id="questlog"></div></div>
+      <div id="maplist"></div>
+    </div>
+  </div>
+
+  <div id="pop"><div id="popin"></div></div>
+  <div id="toast"></div>
+  <div id="over" style="position:absolute;inset:0;z-index:21;background:var(--sheet);padding:22px;display:none;flex-direction:column;justify-content:center">
+    <h1 class="pixel" id="overtitle" style="font-size:20px;margin-bottom:4px">You fell</h1>
+    <p class="meta" id="oversub" style="margin-bottom:16px"></p>
+    <div class="statbox" id="overstats"></div>
+    <div class="statbox" id="overbest"></div>
+    <button class="btn go wide" data-act="newrun" style="padding:12px">Begin a new run</button>
+  </div>
+  <div id="pick">
+    <h1 class="pixel">EMBERFALL</h1>
+    <p class="s">A roguelike descent. Death ends the run — only the stash survives.</p>
+    <div id="nameRow"><div class="slab">Name</div><input id="pname" maxlength="14" placeholder="wanderer" autocomplete="off"></div>
+    <div class="slab">Choose a path</div>
+    <div id="picklist"></div>
+    <button class="btn go wide" data-act="begin" style="padding:12px;margin-top:6px">Begin the descent</button>
+  </div>
+</div>
+<div id="nav">
+  <div class="navb on" data-go="fight"><i>⚔</i>Explore</div>
+  <div class="navb" data-go="gear"><i>▦</i>Bag<u id="newdot">•</u></div>
+  <div class="navb" data-go="tree"><i>✦</i>Skills<u id="ptdot">•</u></div>
+  <div class="navb" data-go="craft"><i>⚒</i>Craft</div>
+  <div class="navb" data-go="maps"><i>◈</i>Atlas</div>
+</div>
+</div>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

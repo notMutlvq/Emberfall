@@ -1,0 +1,45 @@
+/* Arabic string table — the eventual source of truth (see build brief §7).
+ * Not wired in yet; populated for real in stage 5. Starter glossary from
+ * the brief so the shape matches en.ts key-for-key.
+ */
+import type { Dict } from "./en.ts";
+
+export const ar: Dict = {
+  appName: "سقوط الجمر",
+  newRun: "جولة جديدة",
+  login: "تسجيل الدخول",
+  signup: "إنشاء حساب",
+  username: "اسم المستخدم",
+  password: "كلمة المرور",
+  leaderboard: "لوحة المتصدرين",
+  bestRun: "أفضل جولة",
+  level: "المستوى",
+  life: "الصحة",
+  mana: "المانا",
+  damage: "الضرر",
+  armour: "الدرع",
+  resistance: "المقاومة",
+  critChance: "فرصة الضربة الحاسمة",
+  moveSpeed: "سرعة الحركة",
+  attackSpeed: "سرعة الهجوم",
+  bag: "الحقيبة",
+  stash: "المخزن",
+  workbench: "طاولة الصناعة",
+  abilities: "القدرات",
+  upgrade: "ترقية",
+  tier: "المرتبة",
+  equip: "تجهيز",
+  salvage: "تفكيك",
+  reroll: "إعادة التوزيع",
+  lock: "تثبيت",
+  enhance: "تقوية",
+  materials: "المواد",
+  shard: "شظية",
+  gold: "الذهب",
+  potion: "جرعة",
+  zone: "المنطقة",
+  boss: "الزعيم",
+  bounty: "مهمة",
+  kills: "عدد القتلى",
+  youFell: "لقد سقطت",
+};
