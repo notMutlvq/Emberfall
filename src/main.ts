@@ -17,6 +17,11 @@ import { applyStaticI18n } from "./i18n/index.ts";
 
 let profile: Profile | null = null;
 
+// Portrait-only. Real lock needs an installed PWA / fullscreen on Android;
+// elsewhere this rejects harmlessly and the CSS phone frame keeps layout sane.
+type LockableOrientation = ScreenOrientation & { lock?: (o: string) => Promise<void> };
+void (screen.orientation as LockableOrientation | undefined)?.lock?.("portrait").catch(() => {});
+
 async function boot(): Promise<void> {
   applyStaticI18n();
   await whenAssetsReady();

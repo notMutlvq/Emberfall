@@ -4,19 +4,25 @@ Portrait mobile roguelike ARPG. Ported from the single-file prototype
 `emberfall-v9.html` (kept in the repo as the gameplay reference — see that
 file and `emberfall-claude-code-prompt.md` for the full spec).
 
-## Status: stage 5 of 6
+## Status: stage 6 of 6 — feature-complete
 
-Auth + `profiles`, run/stash persistence, leaderboard, and now the
-**full Arabic/RTL pass**: `<html lang="ar" dir="rtl">`, every string in
-Arabic, Tajawal for Arabic text (Silkscreen kept for the Latin logo). The
-canvas game world does not mirror — joystick right, abilities left. See
-`GLOSSARY.md` for the terminology and `emberfall-claude-code-prompt.md`
-§7 / §12. Only PWA + deploy (stage 6) remains.
+All six stages are in: scaffold + ported game, Supabase auth, run/stash
+persistence, leaderboard + edge-function validation, full Arabic/RTL, and
+now **PWA + deploy**. Installable (manifest + maskable icons + a Workbox
+service worker that precaches the app shell so it loads offline up to the
+login screen). Deployed to GitHub Pages at
+**https://notmutlvq.github.io/Emberfall/** via `.github/workflows/deploy.yml`.
 
-The **`Asset_1/` art re-skin was dropped** (no license file was ever
-supplied; the pack is a medieval-town set that doesn't fit a dungeon
-crawler). The game ships on the stage-1 placeholder art — Kenney tiles +
-the CraftPix hero. Revisit post-launch if wanted.
+The **`Asset_1/` art re-skin was dropped** (no license file, wrong genre).
+The game ships on placeholder art — Kenney tiles + the CraftPix hero.
+CraftPix free-license terms verified pre-deploy — see
+`src/assets/CREDITS.md`.
+
+### Base path
+
+`vite.config.ts` sets `base: "/Emberfall/"` for the GitHub Pages project
+site, so **`npm run dev` serves at `http://localhost:5173/Emberfall/`** (not
+`/`). If this ever moves to a domain root, set `base` back to `"/"`.
 
 Persistence recap: an in-progress run is mirrored to `localStorage`
 (survives a reload / phone lock / dropped connection — "Resume run" on the
@@ -100,9 +106,16 @@ replay validation, which isn't worth it for a handful of players. Use the
             sheets (bag/skills/craft/atlas)
   /net      supabase client, username/password auth, player_state, leaderboard
   /i18n     ar.ts (shipped) + en.ts (type source / debug) + t() and applyStaticI18n()
-  /assets   extracted PNGs + CREDITS.md (licensing — read before deploy)
+  /assets   extracted PNGs + CREDITS.md (CraftPix terms verified 2026-09-01)
+/public     PWA icons (192/512/maskable), apple-touch-icon, favicon.svg
 /supabase   schema.sql, policies.sql, functions/submit-run/ (edge function)
+/.github/workflows/deploy.yml   build + publish dist/ to GitHub Pages
 ```
+
+The service worker (`vite-plugin-pwa`, Workbox `generateSW`) precaches the
+built JS/CSS/HTML/PNG/SVG and runtime-caches the Google Fonts files.
+Supabase requests are never cached. `registerType: "autoUpdate"` — a new
+deploy is picked up on the next launch.
 
 `player_state` rows are created lazily on first save; RLS keeps them
 owner-only. `runs` is public-read (it's the leaderboard) and written only

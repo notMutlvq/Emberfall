@@ -20,19 +20,22 @@ CC0 — public domain, no restrictions, attribution not required. Credited anywa
   meant for layering — a clothing layer is outstanding art work per the brief).
 - `boss.png` — CraftPix **free undead tileset**, boss sprite.
 
-CraftPix's free license (as described in the build brief) permits use in games,
-including commercial ones, but **prohibits redistributing the asset files
-themselves**. These are served here as compiled/packed image files rather than
-inline base64, which is what the brief asked for — but note as flagged in stage 1's
-report: a PNG served by any web server is still downloadable by a determined user,
-same as every other web game's art. Shipping them rendered in a playable game is
-consistent with CraftPix's terms as described; it does not make the files
-undownloadable.
+**Verified against craftpix.net/file-licenses on 2026-09-01** (stage 6, pre-deploy):
 
-**Not independently re-verified against CraftPix's current live license text as
-part of this stage** — the user asked to skip that web check. **Before deploy,
-confirm the current terms at craftpix.net (attribution requirements can change)
-and update this file if anything here is stale.**
+- Use in personal **and commercial** projects: permitted, any number.
+- **Attribution: not required** ("any credit will be highly appreciated").
+  Credited here regardless.
+- **Reselling or redistributing the raw source files (PNG/JPG/EPS/AI) — or a
+  slightly modified version — is prohibited**, as is redistribution that makes
+  the files usable to other end-users through an app. **Embedding assets in a
+  game is explicitly allowed.**
+- Use of the assets to train / fine-tune AI or ML systems is prohibited.
+
+Emberfall serves `hero.png` / `boss.png` as compiled, packed image files
+rendered inside a playable game — the allowed use. They are not offered for
+download, repackaged, or resold. (As with any web game, a determined user can
+still save a rendered PNG; that is not redistribution in the license's sense.)
+No attribution string is required in-product.
 
 ## Outstanding art work
 
