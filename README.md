@@ -4,19 +4,30 @@ Portrait mobile roguelike ARPG. Ported from the single-file prototype
 `emberfall-v9.html` (kept in the repo as the gameplay reference — see that
 file and `emberfall-claude-code-prompt.md` for the full spec).
 
-## Status: stage 6 of 6 — feature-complete
+## Status: shipped (all 6 build stages) + iterating
 
-All six stages are in: scaffold + ported game, Supabase auth, run/stash
-persistence, leaderboard + edge-function validation, full Arabic/RTL, and
-now **PWA + deploy**. Installable (manifest + maskable icons + a Workbox
-service worker that precaches the app shell so it loads offline up to the
-login screen). Deployed to GitHub Pages at
-**https://notmutlvq.github.io/Emberfall/** via `.github/workflows/deploy.yml`.
+The six build stages are done — scaffold + ported game, Supabase auth,
+run/stash persistence, leaderboard + edge-function validation, full
+Arabic/RTL, PWA + deploy. Live at
+**https://notmutlvq.github.io/Emberfall/** (GitHub Pages via
+`.github/workflows/deploy.yml`). Installable PWA — manifest, maskable
+icons, a Workbox service worker precaching the app shell for offline load
+up to the login screen.
 
-The **`Asset_1/` art re-skin was dropped** (no license file, wrong genre).
-The game ships on placeholder art — Kenney tiles + the CraftPix hero.
-CraftPix free-license terms verified pre-deploy — see
-`src/assets/CREDITS.md`.
+**Post-ship iteration** (ongoing):
+- Speed rebalance (player was ~2.7x mob speed; now ~1.5x), a small ability
+  nerf/buff pass, random base-item names.
+- The interact button (gate / stash / anvil / chest / NPC) was dead on
+  touch since the port — fixed. Dungeons now have a "return to camp" gate.
+- Bottom nav trimmed to Explore / Bag / Skills / Settings — Atlas and the
+  Workbench are reached from the camp gate and anvil.
+- Settings menu: sound volume/mute, `ar`/`en` language, end-run, log out,
+  wipe saved data. Loading screen. Sound scaffold (`src/game/audio.ts` +
+  `public/sfx/` — silent until files are added).
+
+Art: ships on placeholder art (Kenney tiles + CraftPix hero). A full
+re-skin from the paid `Asset_1/` CraftPix packs is the next big piece —
+see below.
 
 ### Base path
 
@@ -101,16 +112,22 @@ replay validation, which isn't worth it for a handful of players. Use the
 ```
 /src
   /game     engine, state, classes, abilities, items, zones, combat, render, hud, quests
-            save (run mirror + stash/meta persistence)
+            save (run mirror + stash/meta persistence), audio (sound scaffold)
   /ui       screens, auth, mainmenu (menu + leaderboard), menu (class pick),
-            sheets (bag/skills/craft/atlas)
+            settings, sheets (bag / skills / craft / atlas)
   /net      supabase client, username/password auth, player_state, leaderboard
   /i18n     ar.ts (shipped) + en.ts (type source / debug) + t() and applyStaticI18n()
   /assets   extracted PNGs + CREDITS.md (CraftPix terms verified 2026-09-01)
 /public     PWA icons (192/512/maskable), apple-touch-icon, favicon.svg
+            /sfx  drop-in sound effects (empty by default — see its README)
 /supabase   schema.sql, policies.sql, functions/submit-run/ (edge function)
 /.github/workflows/deploy.yml   build + publish dist/ to GitHub Pages
 ```
+
+The Atlas and Workbench sheets (`sh-maps`, `sh-craft`) still exist and
+still work — they're just off the bottom nav. `quests.interact()` opens
+the Atlas from the camp gate and the Workbench from the anvil; a dungeon
+gate at the entrance calls `toHub()`.
 
 The service worker (`vite-plugin-pwa`, Workbox `generateSW`) precaches the
 built JS/CSS/HTML/PNG/SVG and runtime-caches the Google Fonts files.
