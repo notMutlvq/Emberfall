@@ -4,12 +4,15 @@ Portrait mobile roguelike ARPG. Ported from the single-file prototype
 `emberfall-v9.html` (kept in the repo as the gameplay reference — see that
 file and `emberfall-claude-code-prompt.md` for the full spec).
 
-## Status: stage 2 of 6
+## Status: stage 3 of 6
 
-Auth (Supabase, username + password) and the `profiles` table are in.
-Persistence (stage 3), leaderboard (stage 4), Arabic/RTL + art re-skin
-(stage 5), PWA/deploy (stage 6) still to come. See
-`emberfall-claude-code-prompt.md` §12.
+Auth (Supabase, username + password) + `profiles`, and now persistence:
+an in-progress run is mirrored to `localStorage` (survives a reload / phone
+lock / dropped connection — "Resume run" on the main menu), and the stash +
+best score + run count live in `player_state`, synced to Supabase when
+signed in and cached in `localStorage` offline. Leaderboard (stage 4),
+Arabic/RTL + art re-skin (stage 5), PWA/deploy (stage 6) still to come.
+See `emberfall-claude-code-prompt.md` §12.
 
 ## Run it
 
@@ -37,12 +40,17 @@ nothing persists — handy for working on gameplay.
 ```
 /src
   /game     engine, state, classes, abilities, items, zones, combat, render, hud, quests
+            save (run mirror + stash/meta persistence)
   /ui       screens, auth, mainmenu, menu (class pick), sheets (bag/skills/craft/atlas)
-  /net      supabase client + username/password auth
+  /net      supabase client + username/password auth + player_state access
   /i18n     en.ts / ar.ts string tables — not wired into the UI yet (stage 5)
   /assets   extracted PNGs + CREDITS.md (licensing — read before deploy)
 /supabase   schema.sql + policies.sql
 ```
+
+`schema.sql` already creates `player_state` (and `runs`), so stage 3 needs
+no migration — if you ran the stage-2 SQL you are set. The row is created
+lazily on first save; RLS keeps it owner-only.
 
 `core.ts` holds the shared mutable game state (`S`, `P`, `W.Z`) and data
 tables with no imports of its own, so the rest of the game modules can

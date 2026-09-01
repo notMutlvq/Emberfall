@@ -12,6 +12,7 @@ import { buildSkills, toast } from "./hud.ts";
 import { autoSlot } from "./combat.ts";
 import { go, paintAll } from "../ui/sheets.ts";
 import { showScreen } from "../ui/screens.ts";
+import { saveRun } from "./save.ts";
 
 export function newRunState(): void {
   S.lv = 1;
@@ -60,6 +61,7 @@ export function toHub(): void {
   S.auras = {};
   paintAll();
   go("fight");
+  saveRun();
 }
 
 export function enterZone(i: number): void {
@@ -71,4 +73,5 @@ export function enterZone(i: number): void {
   go("fight");
   toast("— " + ZONES[i].name + " —");
   paintAll();
+  saveRun();
 }

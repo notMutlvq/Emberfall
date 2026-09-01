@@ -1,30 +1,40 @@
 /* ===================== boot =====================
- * Stage 2: assets -> resolve session -> auth screen or main menu.
- * "New run" from the menu drops into the class-pick screen, then the game.
- * Offline (no Supabase env) skips auth entirely.
+ * Stage 3: assets -> local meta -> resolve session -> auth screen or main menu.
+ * On a live session the account's stash + best score are pulled from Supabase;
+ * offline they come from localStorage. "Resume run" appears when a run mirror
+ * is on disk; "New run" always starts fresh.
  */
 import { whenAssetsReady } from "./game/assets.ts";
 import { $ } from "./game/core.ts";
-import { buildMenu } from "./ui/menu.ts";
+import { buildMenu, resumeRun } from "./ui/menu.ts";
 import { online } from "./net/supabase.ts";
 import { currentProfile, type Profile } from "./net/auth.ts";
 import { initAuth } from "./ui/auth.ts";
 import { initMainMenu, showMainMenu } from "./ui/mainmenu.ts";
 import { showScreen } from "./ui/screens.ts";
+import { loadMeta, attachUser, detachUser } from "./game/save.ts";
 
 let profile: Profile | null = null;
 
 async function boot(): Promise<void> {
   await whenAssetsReady();
+  loadMeta();
   buildMenu();
 
-  initAuth((p) => {
+  initAuth(async (p) => {
     profile = p;
+    await attachUser(p.id);
     showMainMenu(profile);
   });
   initMainMenu(
     () => showScreen("pick"), // New run
-    () => showScreen("auth"), // logged out
+    () => {
+      // logged out
+      detachUser();
+      profile = null;
+      showScreen("auth");
+    },
+    () => resumeRun(), // Resume run
   );
   $("btn-over-menu").addEventListener("click", () => {
     ($("over") as HTMLElement).style.display = "none";
@@ -36,8 +46,12 @@ async function boot(): Promise<void> {
     return;
   }
   profile = await currentProfile();
-  if (profile) showMainMenu(profile);
-  else showScreen("auth");
+  if (profile) {
+    await attachUser(profile.id);
+    showMainMenu(profile);
+  } else {
+    showScreen("auth");
+  }
 }
 
 void boot();

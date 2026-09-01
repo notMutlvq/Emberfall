@@ -15,6 +15,7 @@ import { newMob } from "./zones.ts";
 import { lootMsg, toast, buildSkills, paintHud } from "./hud.ts";
 import { questTick } from "./quests.ts";
 import { toHub } from "./state.ts";
+import { recordRunEnd } from "./save.ts";
 
 export const AI_R = 17;
 
@@ -442,6 +443,8 @@ export function die(): void {
     : '<div class="slab">Best run so far</div>this one — nothing to beat yet';
   $("overtitle").textContent = score > (prev ? (prev.score ?? 0) : 0) ? "A new best" : "You fell";
   ($("over") as HTMLElement).style.display = "flex";
+  // run is over: drop the mirror, flush stash + best score + run count
+  recordRunEnd();
 }
 
 function fx(x: number, y: number, v: number | string, c: string): void {

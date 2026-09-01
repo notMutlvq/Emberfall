@@ -3,13 +3,17 @@
  * menu with account/scoreboard lands in later stages.
  * Ported verbatim from emberfall-v9.html.
  */
-import { S, $, type ClassKey } from "../game/core.ts";
+import { S, $, clamp, type ClassKey } from "../game/core.ts";
 import { CLASSES } from "../game/classes.ts";
 import { heroPortrait } from "../game/assets.ts";
-import { toast, lootMsg } from "../game/hud.ts";
+import { toast, lootMsg, buildSkills } from "../game/hud.ts";
 import { newRunState } from "../game/state.ts";
+import { genHub, genZone } from "../game/zones.ts";
+import { stats } from "../game/items.ts";
 import { resize } from "../game/render.ts";
 import { startLoop } from "../game/engine.ts";
+import { loadRun, applyRun, setRunActive, saveRun } from "../game/save.ts";
+import { paintAll } from "./sheets.ts";
 import { showScreen } from "./screens.ts";
 
 function bar3(v: number, col: string): string {
@@ -44,7 +48,31 @@ export function beginRun(): void {
   S.cls = S.pend;
   showScreen("game");
   newRunState();
+  setRunActive(true);
+  saveRun();
   resize();
   lootMsg("Ember Camp. Take a bounty, then the gate.");
+  startLoop();
+}
+
+/* Restore an in-progress run from the localStorage mirror. The zone is
+ * regenerated fresh and the player dropped at its entrance with the saved
+ * HP — no mid-combat state is kept (locked decision #5). */
+export function resumeRun(): void {
+  const d = loadRun();
+  if (!d) return toast("No run to resume.");
+  applyRun(d);
+  showScreen("game");
+  if (S.zone < 0) genHub();
+  else genZone(S.zone);
+  const st = stats();
+  S.hp = clamp(d.hp ?? st.hp, 1, st.hp);
+  S.mp = st.mana;
+  setRunActive(true);
+  saveRun();
+  buildSkills();
+  resize();
+  paintAll();
+  lootMsg("Run restored.");
   startLoop();
 }

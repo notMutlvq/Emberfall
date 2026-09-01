@@ -9,6 +9,7 @@ import { stats, matTier, allItems, itemScore, rollAff, affLabel } from "../game/
 import { abList, abNodes, abCost, tierOpen } from "../game/abilities.ts";
 import { paintHud, toast, buildSkills } from "../game/hud.ts";
 import { CLASSES } from "../game/classes.ts";
+import { persistMeta, saveRun } from "../game/save.ts";
 
 function cellHTML(it: Item, sel?: boolean): string {
   return `<div class="cell r${RARITY[it.rar].k} ${sel ? "sel" : ""}" data-uid="${it.uid}">
@@ -212,6 +213,8 @@ export function salvage(it: Item | undefined): void {
   S.stash = S.stash.filter((b) => b.uid !== it.uid);
   toast("+" + n + " T" + t + " materials");
   paintAll();
+  saveRun();
+  persistMeta();
 }
 
 export function moveItem(uid: number): void {
@@ -231,6 +234,8 @@ export function moveItem(uid: number): void {
   }
   ($("pop") as HTMLElement).classList.remove("on");
   paintAll();
+  saveRun();
+  persistMeta();
 }
 
 export function enhance(it: Item | undefined): void {

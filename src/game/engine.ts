@@ -17,18 +17,31 @@ import { allItems } from "./items.ts";
 import { toast } from "./hud.ts";
 import { newRun, enterZone } from "./state.ts";
 import { selectCls, beginRun } from "../ui/menu.ts";
+import { saveRun, isRunActive } from "./save.ts";
 
 /* ---------- frame loop ---------- */
 let last = performance.now();
 let booted = false;
+let lastSave = 0;
 
 function frame(t: number): void {
   const dt = Math.min(0.034, (t - last) / 1000);
   last = t;
   if (S.cls && !sheetOpen()) update(dt);
   if (S.cls) draw();
+  if (isRunActive() && t - lastSave > 4000) {
+    lastSave = t;
+    saveRun();
+  }
   requestAnimationFrame(frame);
 }
+
+/* Flush the run mirror the moment the tab is backgrounded or closed — on
+ * mobile that is the usual way a session ends (home button, call, lock). */
+addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "hidden") saveRun();
+});
+addEventListener("pagehide", () => saveRun());
 
 export function startLoop(): void {
   if (booted) return;
