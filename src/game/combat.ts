@@ -247,9 +247,14 @@ export function update(dt: number): void {
   if (nearObj) {
     ib.classList.add("on");
     ib.textContent = (nearObj as Obj).label;
+    // the tap dispatcher keys off data-act; the prototype sets it here and
+    // the stage-1 port dropped it — without it the button was dead on touch
+    // (only the "e" key worked). This is the "gate won't open" bug.
+    ib.dataset.act = "interact";
     window.__near = nearObj;
   } else {
     ib.classList.remove("on");
+    delete ib.dataset.act;
     window.__near = null;
   }
   Z.fx = Z.fx.filter((f) => {
