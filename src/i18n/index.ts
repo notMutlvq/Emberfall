@@ -17,9 +17,24 @@ import { ar } from "./ar.ts";
 const dict = { en, ar } as const;
 export type Locale = keyof typeof dict;
 
+const LKEY = "emberfall.locale.v1";
 let locale: Locale = "ar";
+try {
+  const s = localStorage.getItem(LKEY);
+  if (s === "ar" || s === "en") locale = s;
+} catch {
+  /* ignore */
+}
+
+/** Persist the choice. The caller reloads — `dir`/`lang` on <html> and every
+ *  rendered string are set at boot, not swapped live. */
 export function setLocale(l: Locale): void {
   locale = l;
+  try {
+    localStorage.setItem(LKEY, l);
+  } catch {
+    /* ignore */
+  }
 }
 export function getLocale(): Locale {
   return locale;
@@ -35,9 +50,13 @@ export function t(key: DictKey, vars?: Vars): string {
   return s;
 }
 
-/** Fill every element carrying data-i18n / data-i18n-ph with its string.
- *  Call once after the DOM is parsed. */
+/** Fill every element carrying data-i18n / data-i18n-ph with its string,
+ *  and set <html lang/dir> for the active locale. Call once at boot. */
 export function applyStaticI18n(root: ParentNode = document): void {
+  if (root === document) {
+    document.documentElement.lang = locale;
+    document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
+  }
   root.querySelectorAll<HTMLElement>("[data-i18n]").forEach((el) => {
     const key = el.dataset.i18n as DictKey;
     if (key) el.textContent = t(key);

@@ -16,6 +16,20 @@ export const en = {
   navSkills: "Skills",
   navCraft: "Craft",
   navAtlas: "Atlas",
+  navSettings: "Settings",
+
+  /* ---- loading + settings ---- */
+  loading: "Loading…",
+  setSound: "Sound",
+  setVolume: "Volume",
+  setMute: "Mute",
+  setLanguage: "Language",
+  setAbandon: "End run & return to menu",
+  setWipe: "Clear saved data",
+  wipeConfirm: "Tap again to wipe your run and stash.",
+  wipeDone: "Saved data cleared.",
+  setVersion: "Version {v}",
+  setCredits: "Art: Kenney (CC0), CraftPix. Font: Tajawal.",
 
   /* ---- auth ---- */
   authIntro: "Log in to play. Your best runs go on the board.",

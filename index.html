@@ -117,6 +117,7 @@
   </div>
 
   <div id="mainmenu">
+    <button id="mm-settings" aria-label="settings">⚙</button>
     <h1 class="pixel">EMBERFALL</h1>
     <p class="s" id="mm-user">—</p>
     <button class="btn go wide" id="mm-resume" style="padding:12px;display:none" data-i18n="resumeRun">متابعة الجولة</button>
@@ -148,9 +149,45 @@
   <div class="navb on" data-go="fight"><i>⚔</i><span data-i18n="navExplore">استكشاف</span></div>
   <div class="navb" data-go="gear"><i>▦</i><span data-i18n="navBag">الحقيبة</span><u id="newdot">•</u></div>
   <div class="navb" data-go="tree"><i>✦</i><span data-i18n="navSkills">المهارات</span><u id="ptdot">•</u></div>
-  <div class="navb" data-go="craft"><i>⚒</i><span data-i18n="navCraft">الصناعة</span></div>
-  <div class="navb" data-go="maps"><i>◈</i><span data-i18n="navAtlas">الأطلس</span></div>
+  <div class="navb" data-go="settings"><i>⚙</i><span data-i18n="navSettings">الإعدادات</span></div>
 </div>
+</div>
+
+<div id="loading">
+  <div class="lflame" aria-hidden="true"></div>
+  <div class="lbar"><i></i></div>
+  <div class="lmsg" data-i18n="loading">جارٍ التحميل…</div>
+</div>
+
+<div id="settings">
+  <div class="sheet-inner">
+    <h1 class="pixel" data-i18n="navSettings">الإعدادات</h1>
+
+    <div class="statbox">
+      <div class="slab" data-i18n="setSound">الصوت</div>
+      <div class="row"><span data-i18n="setVolume">مستوى الصوت</span><input id="set-vol" type="range" min="0" max="100" step="5"></div>
+      <label class="row" style="gap:8px;margin-top:8px"><input id="set-mute" type="checkbox"><span data-i18n="setMute">كتم الصوت</span></label>
+    </div>
+
+    <div class="statbox">
+      <div class="slab" data-i18n="setLanguage">اللغة</div>
+      <div class="tabs" id="set-lang">
+        <div class="tab" data-lang="ar">العربية</div>
+        <div class="tab" data-lang="en">English</div>
+      </div>
+    </div>
+
+    <div class="statbox">
+      <button class="btn wide" id="set-tomenu" style="display:none" data-i18n="setAbandon">إنهاء الجولة والعودة للقائمة</button>
+      <button class="btn wide" id="set-logout" style="margin-top:8px;display:none" data-i18n="logOut">تسجيل الخروج</button>
+      <button class="btn wide" id="set-wipe" style="margin-top:8px" data-i18n="setWipe">مسح البيانات المحفوظة</button>
+    </div>
+
+    <div class="meta" id="set-credits"></div>
+    <div class="meta" id="set-version"></div>
+
+    <button class="btn go wide" id="set-close" style="margin-top:10px" data-i18n="close">إغلاق</button>
+  </div>
 </div>
 <script type="module" src="/src/main.ts"></script>
 </body>

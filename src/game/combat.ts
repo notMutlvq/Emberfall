@@ -18,6 +18,7 @@ import { toHub } from "./state.ts";
 import { recordRunEnd } from "./save.ts";
 import { submitRun } from "../net/leaderboard.ts";
 import { t } from "../i18n/index.ts";
+import { sfx, stepSound } from "./audio.ts";
 
 export const AI_R = 17;
 
@@ -57,6 +58,7 @@ export function update(dt: number): void {
   const moving = !!(dx || dy);
   if (moving) {
     mv(P, dx * spd * dt, dy * spd * dt, 0.3);
+    if (!Z.hub) stepSound(performance.now());
     P.anim += dt * 11;
     P.fx = dx;
     P.fy = dy;
@@ -236,6 +238,7 @@ export function update(dt: number): void {
       Z.bossUp = true;
       Z.mobs.push(newMob(Z.d as ZoneDef, Z.bossRoom!.cx + 0.5, Z.bossRoom!.cy + 0.5, { boss: true }));
       lootMsg(t("bossAwakens", { boss: Z.d.boss }));
+      sfx("boss");
     }
     if (Z.portal && Math.hypot(P.x - Z.portal.x, P.y - Z.portal.y) < 0.95) {
       toHub();
@@ -291,6 +294,7 @@ export function takeHit(raw: number, st: Stats): void {
   const dm = Math.max(1, Math.round(raw * (100 / (100 + st.def)) * (1 - st.resist / 100) * (0.9 + Math.random() * 0.2)));
   S.hp -= dm;
   P.hit = 0.2;
+  sfx("hit", { vol: 0.7 });
   fx(P.x, P.y, dm, "#c0453c");
   if (S.hp <= 0) {
     if (st.guard && !S.guardUsed) {
@@ -342,6 +346,7 @@ function killMob(m: Mob): void {
   const Z = W.Z;
   if (!Z.mobs.includes(m)) return;
   Z.mobs = Z.mobs.filter((x) => x !== m);
+  sfx("mob_die", { vol: m.boss ? 1 : m.elite ? 0.8 : 0.55 });
   const spread = abList().some((a) => abMods(a).spread && a.el === "fire");
   if (spread && m.burn > 0)
     Z.mobs.forEach((o) => {
@@ -381,6 +386,7 @@ function killMob(m: Mob): void {
 
 export function dropLoot(x: number, y: number, ilvl: number, fr?: number): void {
   W.Z.loot.push({ x, y, item: makeItem(ilvl, null, fr), b: Math.random() * 6 });
+  sfx("drop", { vol: 0.45 });
 }
 
 function grab(it: Item): void {
@@ -390,6 +396,7 @@ function grab(it: Item): void {
   }
   if (!S.run.best || itemScore(it) > itemScore(S.run.best)) S.run.best = it;
   S.bag.push(it);
+  sfx("pickup", { vol: 0.6 });
   ($("newdot") as HTMLElement).style.display = "block";
   lootMsg(it.rar ? t("lootNameRarity", { name: it.name, rarity: RARITY[it.rar].name }) : it.name);
   const cur = S.eq[it.slot];
@@ -403,6 +410,7 @@ function gainXP(n: number): void {
     S.lv++;
     S.pts++;
     lootMsg(t("levelSkillPoint", { lv: S.lv }));
+    sfx("levelup");
     ($("ptdot") as HTMLElement).style.display = "block";
     const nw = abList().filter((a) => a.lvl === S.lv);
     nw.forEach((a) => {
@@ -604,5 +612,6 @@ export function drinkPotion(): void {
   S.pots--;
   S.hp = Math.min(st.hp, S.hp + Math.round(st.hp * 0.4));
   S.mp = Math.min(st.mana, S.mp + Math.round(st.mana * 0.25));
+  sfx("potion");
   fx(P.x, P.y, "heal", "#7fd08d");
 }

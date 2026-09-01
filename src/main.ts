@@ -1,18 +1,18 @@
 /* ===================== boot =====================
- * Stage 3: assets -> local meta -> resolve session -> auth screen or main menu.
- * On a live session the account's stash + best score are pulled from Supabase;
- * offline they come from localStorage. "Resume run" appears when a run mirror
- * is on disk; "New run" always starts fresh.
+ * loading screen -> assets -> local meta -> resolve session -> auth or menu.
+ * On a live session the account's stash + best score come from Supabase;
+ * offline they come from localStorage.
  */
 import { whenAssetsReady } from "./game/assets.ts";
-import { $ } from "./game/core.ts";
+import { $, S } from "./game/core.ts";
 import { buildMenu, resumeRun } from "./ui/menu.ts";
 import { online } from "./net/supabase.ts";
 import { currentProfile, type Profile } from "./net/auth.ts";
 import { initAuth } from "./ui/auth.ts";
 import { initMainMenu, showMainMenu } from "./ui/mainmenu.ts";
+import { initSettings } from "./ui/settings.ts";
 import { showScreen } from "./ui/screens.ts";
-import { loadMeta, attachUser, detachUser } from "./game/save.ts";
+import { loadMeta, attachUser, detachUser, setRunActive, clearRun } from "./game/save.ts";
 import { applyStaticI18n } from "./i18n/index.ts";
 
 let profile: Profile | null = null;
@@ -22,9 +22,15 @@ let profile: Profile | null = null;
 type LockableOrientation = ScreenOrientation & { lock?: (o: string) => Promise<void> };
 void (screen.orientation as LockableOrientation | undefined)?.lock?.("portrait").catch(() => {});
 
+function toMainMenu(): void {
+  ($("over") as HTMLElement).style.display = "none";
+  showMainMenu(profile);
+}
+
 async function boot(): Promise<void> {
   applyStaticI18n();
   await whenAssetsReady();
+  $("loading").classList.add("done");
   loadMeta();
   buildMenu();
 
@@ -43,10 +49,21 @@ async function boot(): Promise<void> {
     },
     () => resumeRun(), // Resume run
   );
-  $("btn-over-menu").addEventListener("click", () => {
-    ($("over") as HTMLElement).style.display = "none";
-    showMainMenu(profile);
-  });
+  initSettings(
+    () => {
+      // "end run & return to menu" — abandon, don't submit
+      setRunActive(false);
+      clearRun();
+      S.cls = null;
+      toMainMenu();
+    },
+    () => {
+      // logged out from Settings
+      profile = null;
+      showScreen("auth");
+    },
+  );
+  $("btn-over-menu").addEventListener("click", toMainMenu);
 
   if (!online) {
     showMainMenu(null);

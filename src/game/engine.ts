@@ -19,6 +19,7 @@ import { newRun, enterZone } from "./state.ts";
 import { selectCls, beginRun } from "../ui/menu.ts";
 import { saveRun, isRunActive } from "./save.ts";
 import { t as tr } from "../i18n/index.ts";
+import { openSettings } from "../ui/settings.ts";
 
 /* ---------- frame loop ---------- */
 let last = performance.now();
@@ -159,6 +160,7 @@ function handleTap(e: Event): void {
   }
   if (d.cls) return selectCls(d.cls as ClassKey);
   if (d.act === "begin") return beginRun();
+  if (d.go === "settings") return openSettings();
   if (d.go !== undefined) return go(d.go);
   if (d.sk !== undefined) return useSlot(+d.sk);
   if (d.slot !== undefined) return setSlot(+d.slot);
