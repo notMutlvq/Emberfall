@@ -14,11 +14,18 @@ below are this repo's; original pack names are noted per source.
 CC0 — public domain, no restrictions, attribution not required. Credited anyway:
 [kenney.nl](https://kenney.nl).
 
-## CraftPix — free license, redistribution prohibited
+## CraftPix — licensed, redistribution prohibited
 
-- `hero.png` — CraftPix **free base character** sprite atlas (unclothed base sprite
-  meant for layering — a clothing layer is outstanding art work per the brief).
-- `boss.png` — CraftPix **free undead tileset**, boss sprite.
+- `hero.png` — CraftPix free base character sprite atlas (being replaced by the
+  paid "Swordsman" pack, see below).
+- `boss.png` — CraftPix free undead tileset, boss sprite.
+- `weapons.png`, `potions.png` — atlases packed by `scripts/pack-icons.mjs`
+  from **paid CraftPix icon packs** (`Asset_1/Weapon`, `Asset_1/Potion`). The
+  source `Asset_1/` tree is gitignored; only the packed atlases are committed.
+
+The art re-skin from the paid `Asset_1/` CraftPix packs (Swordsman lvl1-3,
+UI kit, weapon/potion/monster icons, effect strips, map tilesets) is in
+progress. Owner holds a CraftPix licence for these.
 
 **Verified against craftpix.net/file-licenses on 2026-09-01** (stage 6, pre-deploy):
 
