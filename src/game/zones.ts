@@ -9,16 +9,22 @@ import {
 } from "./core.ts";
 import { SHEET, ENVI, PROPI } from "./assets.ts";
 
-function fillFloor(w: number, h: number, hub: boolean): number[][] {
-  // Mostly the base cobble tile (0) with occasional detail (1-3). The old
-  // "random tile every cell" made the floor read as visual noise, and
-  // variants 4-5 (near-black / flat grey) punched holes in it.
-  const chance = hub ? 0.09 : 0.14;
+function fillFloor(w: number, h: number, _hub: boolean): number[][] {
+  // env.png 0-3 are cobble variants (the common floor), 4-5 are detail
+  // (worn flagstone / cracked cobble) stamped sparsely so the ground reads
+  // as textured stone rather than one flat colour.
   const v = Array.from({ length: h }, () => new Array<number>(w).fill(0));
   for (let y = 0; y < h; y++)
-    for (let x = 0; x < w; x++) v[y][x] = Math.random() < chance ? rnd(1, 3) : 0;
+    for (let x = 0; x < w; x++) {
+      const r = Math.random();
+      v[y][x] = r < 0.6 ? 0 : r < 0.84 ? rnd(1, 3) : r < 0.93 ? 4 : 5;
+    }
   return v;
 }
+
+const PROP_COMMON = 14; // props.png 0..13 are the common small props, 14+ landmarks
+const drawProp = (g: CanvasRenderingContext2D, idx: number, x: number, y: number): void =>
+  g.drawImage(PROPI, idx * 32, 0, 32, 32, x * TW - 8, y * TW - 18, 32, 32);
 
 export function buildMap(): void {
   const Z = W.Z;
@@ -29,29 +35,109 @@ export function buildMap(): void {
   c.height = Hd * TW;
   const g = c.getContext("2d")!;
   g.imageSmoothingEnabled = false;
+
+  const isWall = (x: number, y: number): boolean =>
+    x < 0 || y < 0 || x >= Wd || y >= Hd || Z.g[y][x] === 1;
+
+  // 1. base tile blit — floor from Z.var, walls hashed across env 6-9
   for (let y = 0; y < Hd; y++)
     for (let x = 0; x < Wd; x++) {
-      const idx =
-        Z.g[y][x] === 1 ? ENV.floors + ((x * 7 + y * 13) % ENV.walls) : Z.var[y][x];
+      const idx = Z.g[y][x] === 1 ? ENV.floors + ((x * 7 + y * 13) % ENV.walls) : Z.var[y][x];
       g.drawImage(ENVI, idx * 16, 0, 16, 16, x * TW, y * TW, TW, TW);
     }
+
+  // 2. wall depth — lit lip on the top edge, darkened foot on the bottom face
+  for (let y = 0; y < Hd; y++)
+    for (let x = 0; x < Wd; x++) {
+      if (Z.g[y][x] !== 1) continue;
+      const px = x * TW;
+      const py = y * TW;
+      if (!isWall(x, y - 1)) {
+        g.fillStyle = "rgba(126,130,158,.45)";
+        g.fillRect(px, py, TW, 2);
+        g.fillStyle = "rgba(0,0,0,.22)";
+        g.fillRect(px, py + 2, TW, 2);
+      }
+      if (!isWall(x, y + 1)) {
+        const grd = g.createLinearGradient(0, py + TW * 0.35, 0, py + TW);
+        grd.addColorStop(0, "rgba(0,0,0,0)");
+        grd.addColorStop(1, "rgba(0,0,0,.45)");
+        g.fillStyle = grd;
+        g.fillRect(px, py + TW * 0.35, TW, TW * 0.65);
+      }
+    }
+
+  // 3. drop shadow cast onto the floor by walls above / to the left
+  for (let y = 0; y < Hd; y++)
+    for (let x = 0; x < Wd; x++) {
+      if (Z.g[y][x] !== 0) continue;
+      const px = x * TW;
+      const py = y * TW;
+      if (isWall(x, y - 1)) {
+        const grd = g.createLinearGradient(0, py, 0, py + TW * 0.75);
+        grd.addColorStop(0, "rgba(0,0,0,.42)");
+        grd.addColorStop(1, "rgba(0,0,0,0)");
+        g.fillStyle = grd;
+        g.fillRect(px, py, TW, TW * 0.75);
+      }
+      if (isWall(x - 1, y)) {
+        const grd = g.createLinearGradient(px, 0, px + TW * 0.6, 0);
+        grd.addColorStop(0, "rgba(0,0,0,.3)");
+        grd.addColorStop(1, "rgba(0,0,0,0)");
+        g.fillStyle = grd;
+        g.fillRect(px, py, TW * 0.6, TW);
+      }
+    }
+
+  // 4. rubble piled where a wall foot meets open floor
   for (let y = 1; y < Hd - 1; y++)
     for (let x = 0; x < Wd; x++)
-      if (Z.g[y][x] === 1 && Z.g[y + 1][x] === 0 && Math.random() < 0.03) {
+      if (Z.g[y][x] === 1 && Z.g[y + 1][x] === 0 && Math.random() < 0.05) {
         const [sx, sy] = tsrc(125);
-        g.drawImage(SHEET, sx, sy, TW, TW, x * TW, y * TW, TW, TW);
+        g.drawImage(SHEET, sx, sy, TW, TW, x * TW, y * TW + TW * 0.55, TW, TW * 0.8);
       }
-  // graveyard decorations — a handful per room, hugging the walls
+
+  // 5. graveyard dressing — grave plots + scattered props, hugging the walls
+  const spawnX = Math.round(P.x);
+  const spawnY = Math.round(P.y);
   (Z.rooms || []).forEach((r) => {
-    const n = clamp(Math.round((r.w * r.h) / 70), 1, 4);
+    const inFloor = (x: number, y: number): boolean =>
+      y >= 0 && y < Hd && x >= 0 && x < Wd && Z.g[y][x] === 0 &&
+      (Math.abs(x - spawnX) > 3 || Math.abs(y - spawnY) > 3);
+
+    if (!Z.hub && Math.random() < 0.42) {
+      // a row of headstones tucked against one wall
+      const gy = Math.random() < 0.5 ? r.y + 2 : r.y + r.h - 3;
+      const gx0 = rnd(r.x + 2, Math.max(r.x + 2, r.x + r.w - 5));
+      for (let i = 0, n = rnd(2, 4); i < n; i++) if (inFloor(gx0 + i, gy)) drawProp(g, rnd(0, 5), gx0 + i, gy);
+    }
+
+    const n = clamp(Math.round((r.w * r.h) / (Z.hub ? 150 : 40)), Z.hub ? 1 : 3, Z.hub ? 3 : 9);
     for (let i = 0; i < n; i++) {
       const x = rnd(r.x + 1, r.x + r.w - 2);
       const y = rnd(r.y + 1, r.y + r.h - 2);
       const edge = x <= r.x + 2 || x >= r.x + r.w - 3 || y <= r.y + 2 || y >= r.y + r.h - 3;
-      if (!edge || Z.g[y][x] === 1) continue;
-      g.drawImage(PROPI, rnd(0, ENV.props - 1) * 32, 0, 32, 32, x * TW - 8, y * TW - 18, 32, 32);
+      if (!inFloor(x, y) || (!edge && Math.random() < 0.55)) continue;
+      const idx = Z.hub
+        ? pick([10, 11, 15, 19, 20]) // camp: rocks + a dead tree, no graves
+        : edge && Math.random() < 0.22
+          ? rnd(PROP_COMMON, ENV.props - 1)
+          : rnd(0, PROP_COMMON - 1);
+      drawProp(g, idx, x, y);
     }
   });
+
+  // 6. per-zone colour wash so the five zones read distinct
+  const tint = (Z.d as ZoneDef).tint;
+  if (tint) {
+    g.save();
+    g.globalCompositeOperation = "multiply";
+    g.globalAlpha = tint[3];
+    g.fillStyle = `rgb(${tint[0]},${tint[1]},${tint[2]})`;
+    g.fillRect(0, 0, c.width, c.height);
+    g.restore();
+  }
+
   Z.map = c;
 }
 
@@ -121,6 +207,12 @@ export function genZone(zi: number): void {
       corr.push([b.cx, y]);
     }
   }
+  // drop lone 1-tile wall nubs left between rooms/corridors — surrounded by
+  // floor on all four sides they read as debris, not structure
+  for (let y = 1; y < Hd - 1; y++)
+    for (let x = 1; x < Wd - 1; x++)
+      if (g[y][x] === 1 && !g[y - 1][x] && !g[y + 1][x] && !g[y][x - 1] && !g[y][x + 1]) g[y][x] = 0;
+
   const mobs: Mob[] = [];
   for (let p = 0; p < D.packs; p++) {
     let bx: number;

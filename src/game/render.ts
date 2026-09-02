@@ -18,6 +18,20 @@ export function resize(): void {
 }
 addEventListener("resize", resize);
 
+let vigKey = "";
+let vig: CanvasGradient | null = null;
+function vignette(w: number, h: number): CanvasGradient {
+  const key = w + "x" + h;
+  if (key !== vigKey || !vig) {
+    const g = ctx.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.35, w / 2, h / 2, Math.max(w, h) * 0.72);
+    g.addColorStop(0, "rgba(7,8,11,0)");
+    g.addColorStop(1, "rgba(7,8,11,.55)");
+    vig = g;
+    vigKey = key;
+  }
+  return vig;
+}
+
 function ent(i: number, cx: number, cy: number, sz: number, flip: boolean): void {
   const [sx, sy] = tsrc(i);
   ctx.save();
@@ -70,7 +84,9 @@ export function draw(): void {
     ctx.drawImage(Z.map, camx * s, camy * s, w * s, h * s, 0, 0, w, h);
   }
   if (!Z.hub) {
-    ctx.fillStyle = "rgba(7,8,11,.26)";
+    ctx.fillStyle = "rgba(7,8,11,.2)";
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = vignette(w, h);
     ctx.fillRect(0, 0, w, h);
   }
   const SX = (x: number) => Math.round(x * TS - camx);

@@ -5,12 +5,15 @@ below are this repo's; original pack names are noted per source.
 
 ## Kenney — CC0
 
-- `tilesheet.png` — Kenney **Tiny Dungeon** tileset (chest, stash, anvil, gate,
-  potion, monster tiles, NPC portraits). The floor/wall cells it also carried
-  (40, 48–51, and the 125 rubble tile) are now re-skinned from CraftPix — see
-  below. The `ui-panel.png` / `ui-button.png` / `ui-button-active.png` 9-slices
-  that used to come from Kenney's **Pixel UI Pack** are now packed from
-  CraftPix's Ui pack instead (see below) — Kenney's UI pack is no longer used.
+- `tilesheet.png` — Kenney **Tiny Dungeon** tileset, now only the monster tiles
+  and NPC portraits. The chest / chest-open / stash / anvil / gate / stump cells
+  are re-skinned from the CraftPix "All Tileset" camp pack by
+  `scripts/pack-tileset-objects.mjs`; the floor/wall cells it carried (40, 48–51)
+  are unused dead constants and the 125 rubble cell is re-skinned by
+  `scripts/pack-env.mjs` — see below. The `ui-panel.png` / `ui-button.png` /
+  `ui-button-active.png` 9-slices that used to come from Kenney's **Pixel UI
+  Pack** are now packed from CraftPix's Ui pack instead (see below) — Kenney's
+  UI pack is no longer used.
 
 CC0 — public domain, no restrictions, attribution not required. Credited anyway:
 [kenney.nl](https://kenney.nl).
@@ -21,12 +24,15 @@ CC0 — public domain, no restrictions, attribution not required. Credited anywa
 - `hero1/2/3.png` — Swordsman lvl1-3, packed by `scripts/pack-hero.mjs`.
 - `weapons.png`, `potions.png` — `scripts/pack-icons.mjs`.
 - `mobs.png` — `scripts/pack-mobs.mjs` (8 monster icons).
-- `props.png` — `scripts/pack-props.mjs` (14 graveyard decorations).
+- `props.png` — `scripts/pack-props.mjs` (22 graveyard decorations: headstones,
+  bones, ruined arches, dead trees, clawing hands — from
+  `Asset_1/Map/Objects_separately/`).
 - `fx_fire/burst/ice.png` — `scripts/pack-fx.mjs` (10-frame effect strips).
-- `env.png` — `scripts/pack-env.mjs`: the dungeon ground strip (grey flagstone +
-  tan cobblestone floors, dark cave-rock walls) from `Asset_1/Map/Water_coasts.png`
-  and `Asset_1/Map/Ground_rocks.png`. The same script re-skins the floor/wall
-  cells still read from `tilesheet.png` (40, 48–51, 125) to match.
+- `env.png` — `scripts/pack-env.mjs`: the dungeon ground strip (tan/grey
+  cobblestone floors + detail, dark cave-rock walls) from
+  `Asset_1/Map/Ground_rocks.png`. The same script re-skins the `tilesheet.png`
+  cell 125 (wall-base rubble) to match. `src/game/zones.ts` `buildMap()` adds the
+  drop-shadows, wall lip/face shading and per-zone colour wash in code.
 - `ui-panel.png`, `ui-button.png`, `ui-button-active.png`, `ui-icons.png` —
   `scripts/pack-ui.mjs`: blank, text-free panel/button/icon pieces from the
   CraftPix **Ui** pack (`Asset_1/Ui/`), recolored from its stock green/tan

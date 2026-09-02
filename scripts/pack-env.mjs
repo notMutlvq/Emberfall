@@ -1,17 +1,14 @@
-/* Pack the dungeon ground strip from the CraftPix "Cemetery" map tiles
- * (Asset_1/Map/Water_coasts.png cobble fills + Asset_1/Map/Ground_rocks.png
- * cave rock) into src/assets/env.png — a 16px horizontal strip:
- *   0-3  floor variants  (grey flagstone + tan cobble, mixed)
- *   4-5  gravel-fleck detail floors
- *   6-9  wall tiles       (grey cave rock)
- * buildMap() reads floor idx from Z.var (0-3) and walls from
- * ENV.floors + n (6-9). See src/game/zones.ts.
+/* Pack the dungeon ground + wall strip into src/assets/env.png — a 16px
+ * horizontal strip read by buildMap() in src/game/zones.ts:
+ *   0-3  floor  (textured flagstone + cobble — the common floor)
+ *   4-5  floor detail  (flat stone / cobble variant — fillFloor stamps sparsely)
+ *   6-9  wall   (dark cave-rock face; buildMap adds the drop-shadow + top rim)
+ * All cells come from the CraftPix "Cemetery" pack Asset_1/Map/Ground_rocks.png.
  *
- * Also re-skins the handful of floor/wall cells still taken from
- * src/assets/tilesheet.png (the Kenney atlas) so they match:
- *   40      T.wall        48-51  T.floor        125  wall-base rubble
- * The chest / anvil / gate / NPC / monster tiles in tilesheet.png are
- * left untouched — their indices are hard-coded across core.ts.
+ * Also re-skins tilesheet.png cell 125 (the wall-base rubble scatter buildMap
+ * stamps where a wall meets floor below) to match. The chest / anvil / gate /
+ * NPC / monster / item-icon cells in tilesheet.png are left untouched — their
+ * indices are hard-coded across core.ts.
  *
  *   node scripts/pack-env.mjs
  */
@@ -19,40 +16,32 @@ import puppeteer from "puppeteer-core";
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
-const WATER = "Asset_1/Map/Water_coasts.png";
 const ROCKS = "Asset_1/Map/Ground_rocks.png";
 const ENV_OUT = "src/assets/env.png";
 const TS_OUT = "src/assets/tilesheet.png";
 const T = 16;
 
-for (const f of [WATER, ROCKS, TS_OUT]) {
+for (const f of [ROCKS, TS_OUT]) {
   if (!existsSync(f)) {
     console.error(`${f} missing — needs the paid CraftPix pack in Asset_1/.`);
     process.exit(1);
   }
 }
 
-// src = which sheet, [col,row] in 16px cells of that sheet
-const W = "water", R = "rocks";
-// env.png slot -> source cell (col,row in 16px cells of that sheet)
+// env.png slot -> [col,row] in 16px cells of Ground_rocks.png
 const ENV = [
-  [W, 1, 10],  // 0  flat grey flagstone  (base floor, ~80% of cells)
-  [W, 25, 10], // 1  tan cobblestone
-  [R, 24, 6],  // 2  grey flagstone, lightly cracked
-  [W, 8, 6],   // 3  tan cobblestone, alt
-  [R, 5, 6],   // 4  grey stone (unused by fillFloor, kept in-family)
-  [W, 25, 10], // 5  tan cobblestone (unused by fillFloor)
-  [R, 8, 15],  // 6  dark cave rock (wall)
-  [R, 9, 15],  // 7  dark cave rock
-  [R, 5, 16],  // 8  dark cave rock
-  [R, 6, 16],  // 9  dark cave rock
+  [20, 22],  // 0  grey cobble            (base floor, ~72% of cells)
+  [21, 22],  // 1  cobble, alt
+  [22, 22],  // 2  cobble, alt
+  [6, 8],    // 3  warmer tan cobble
+  [6, 9],    // 4  cobble, mossy edge     (detail — fillFloor stamps ~9%)
+  [7, 8],    // 5  cobble, worn            (detail)
+  [8, 15],   // 6  dark rock face (wall)
+  [9, 15],   // 7  dark rock face
+  [5, 16],   // 8  dark rock face
+  [1, 4],    // 9  dark rock face, streaked
 ];
-// tilesheet.png (12-col grid) index -> source cell
-const PATCH = {
-  40: [R, 5, 16],   // T.wall
-  48: [W, 1, 10], 49: [W, 25, 10], 50: [R, 24, 6], 51: [W, 8, 6], // T.floor
-  125: [W, 1, 9],   // wall-base rubble scatter (pebbles)
-};
+const PATCH = { 125: [9, 15] }; // tilesheet cell -> Ground_rocks cell
 
 const b64 = (f) => `data:image/png;base64,${readFileSync(f).toString("base64")}`;
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: "new", args: ["--no-sandbox"] });
@@ -60,18 +49,16 @@ const page = await browser.newPage();
 await page.setViewport({ width: 512, height: 256 });
 
 const [envPng, tsPng] = await page.evaluate(
-  async (water, rocks, tsSrc, ENV, PATCH, T) => {
+  async (rocksSrc, tsSrc, ENV, PATCH, T) => {
     const load = (s) => new Promise((res) => { const i = new Image(); i.onload = () => res(i); i.src = s; });
-    const imgs = { water: await load(water), rocks: await load(rocks) };
-    const pick = (c, [src, cx, cy]) => c.drawImage(imgs[src], cx * T, cy * T, T, T, 0, 0, T, T);
+    const rocks = await load(rocksSrc);
+    const pick = (c, [cx, cy]) => c.drawImage(rocks, cx * T, cy * T, T, T, 0, 0, T, T);
 
-    // env strip
     const ec = document.createElement("canvas");
     ec.width = ENV.length * T; ec.height = T;
     const eg = ec.getContext("2d"); eg.imageSmoothingEnabled = false;
     ENV.forEach((cell, i) => { eg.save(); eg.translate(i * T, 0); pick(eg, cell); eg.restore(); });
 
-    // patch tilesheet in place
     const ts = await load(tsSrc);
     const tc = document.createElement("canvas");
     tc.width = ts.width; tc.height = ts.height;
@@ -85,7 +72,7 @@ const [envPng, tsPng] = await page.evaluate(
     }
     return [ec.toDataURL("image/png").split(",")[1], tc.toDataURL("image/png").split(",")[1]];
   },
-  b64(WATER), b64(ROCKS), b64(TS_OUT), ENV, PATCH, T,
+  b64(ROCKS), b64(TS_OUT), ENV, PATCH, T,
 );
 
 writeFileSync(ENV_OUT, Buffer.from(envPng, "base64"));

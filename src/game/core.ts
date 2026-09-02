@@ -19,7 +19,7 @@ export const $ = (id: string): HTMLElement => {
 export const TW = 16;
 export const COLS = 12;
 export const HF = 64; // hero frame size
-export const ENV = { floors: 6, walls: 4, props: 14 } as const;
+export const ENV = { floors: 6, walls: 4, props: 22 } as const;
 export const ANIM = {
   idle: { row: 0, n: 4, fps: 6 },
   walk: { row: 1, n: 6, fps: 13 },
@@ -141,14 +141,17 @@ export interface ZoneDef {
   w: number;
   h: number;
   rooms: number;
+  /** [r,g,b,a] multiply wash baked onto the tilemap so each zone reads
+   *  distinct without a per-zone tileset. undefined = no wash. */
+  tint?: [number, number, number, number];
 }
 
 export const ZONES: ZoneDef[] = [
-  { name: "جوف الرماد", ilvl: 1, packs: 9, boss: "حارس الجوف", kinds: ["slime", "bat"], bossTile: MOBS.demon, w: 76, h: 76, rooms: 14 },
-  { name: "خراب المستنقع المالح", ilvl: 9, packs: 11, boss: "الكاهن الغريق", kinds: ["worm", "spider"], bossTile: MOBS.ghost, w: 84, h: 84, rooms: 16 },
-  { name: "قبو الجمر", ilvl: 18, packs: 13, boss: "آلة القبو", kinds: ["dwarf", "mummy"], bossTile: MOBS.dwarf, w: 92, h: 92, rooms: 18 },
-  { name: "البرج الباكي", ilvl: 28, packs: 15, boss: "سيراف البرج", kinds: ["ghost", "bat"], bossTile: MOBS.ghost, w: 98, h: 98, rooms: 20 },
-  { name: "سقوط الجمر", ilvl: 40, packs: 17, boss: "الجمرة الأخيرة", kinds: ["demon", "mummy"], bossTile: MOBS.demon, w: 104, h: 104, rooms: 22 },
+  { name: "جوف الرماد", ilvl: 1, packs: 9, boss: "حارس الجوف", kinds: ["slime", "bat"], bossTile: MOBS.demon, w: 76, h: 76, rooms: 14, tint: [200, 206, 224, 0.1] },
+  { name: "خراب المستنقع المالح", ilvl: 9, packs: 11, boss: "الكاهن الغريق", kinds: ["worm", "spider"], bossTile: MOBS.ghost, w: 84, h: 84, rooms: 16, tint: [150, 176, 120, 0.24] },
+  { name: "قبو الجمر", ilvl: 18, packs: 13, boss: "آلة القبو", kinds: ["dwarf", "mummy"], bossTile: MOBS.dwarf, w: 92, h: 92, rooms: 18, tint: [232, 150, 88, 0.22] },
+  { name: "البرج الباكي", ilvl: 28, packs: 15, boss: "سيراف البرج", kinds: ["ghost", "bat"], bossTile: MOBS.ghost, w: 98, h: 98, rooms: 20, tint: [140, 170, 216, 0.22] },
+  { name: "سقوط الجمر", ilvl: 40, packs: 17, boss: "الجمرة الأخيرة", kinds: ["demon", "mummy"], bossTile: MOBS.demon, w: 104, h: 104, rooms: 22, tint: [210, 92, 70, 0.26] },
 ];
 
 export interface Room { x: number; y: number; w: number; h: number; cx: number; cy: number }

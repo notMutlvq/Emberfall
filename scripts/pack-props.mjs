@@ -1,7 +1,9 @@
 /* Pack a curated set of CraftPix graveyard decorations
  * (Asset_1/Map/Objects_separately, shadow2 palette) into
- * src/assets/props.png — a 32px horizontal strip. Replaces the Kenney prop
- * strip. Keep the list short; buildMap() scatters these sparsely.
+ * src/assets/props.png — a 32px horizontal strip. buildMap() scatters these:
+ * the first ~14 are the common small props (graves, bones, rocks), the tail
+ * are larger landmarks (ruined arches, dead trees) placed more rarely.
+ * Keep this list length in sync with ENV.props in src/game/core.ts.
  *   node scripts/pack-props.mjs
  */
 import puppeteer from "puppeteer-core";
@@ -12,13 +14,19 @@ const DIR = "Asset_1/Map/Objects_separately";
 const OUT = "src/assets/props.png";
 const CELL = 32;
 
-// files are <Category>_shadow2_<n>.png; order = the ENV.props atlas index
+// order = the props.png atlas index (also the ENV.props count)
 const PICKS = [
-  "Grave_shadow2_1", "Grave_shadow2_3", "Grave_shadow2_5", "Grave_shadow2_8", "Grave_shadow2_11",
-  "Bones_shadow2_3", "Bones_shadow2_6", "Bones_shadow2_12",
-  "Broken_tree_shadow2_4", "Broken_tree_shadow2_5",
-  "Rock_shadow2_2", "Rock_shadow2_3",
-  "Crystal_shadow2_1", "Thorn_palnt_shadow2_2",
+  // -- common small props (idx 0-13) --
+  "Grave_shadow2_2", "Grave_shadow2_3", "Grave_shadow2_5", "Grave_shadow2_7", "Grave_shadow2_9",
+  "Grave_shadow2_1",
+  "Bones_shadow2_1", "Bones_shadow2_3", "Bones_shadow2_6", "Bones_shadow2_12",
+  "Rock_shadow2_2", "Rock_shadow2_4",
+  "Thorn_palnt_shadow2_2", "Dead_arm_shadow2_1",
+  // -- rarer landmarks (idx 14-21) --
+  "Pile_sculls_shadow2", "Rock_shadow2_5",
+  "Ruin_shadow2_1", "Ruin_shadow2_2", "Ruin_shadow2_3",
+  "Dead_tree_shadow3_1", "Dead_tree_shadow3_2",
+  "Scull_door_shadow2",
 ];
 
 if (!existsSync(DIR)) {
