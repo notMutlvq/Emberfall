@@ -66,6 +66,7 @@ export function paintHud(force?: boolean): void {
 function paintHudSlow(st: Stats): void {
   const Z = W.Z;
   $("xpbar").style.width = (S.xp / xpNeed(S.lv)) * 100 + "%";
+  $("lvbadge").textContent = t("lvBadge", { lv: S.lv });
   $("pgold").textContent = String(Math.max(0, Math.round(S.gold)));
   $("pshard").textContent = String(S.shard);
   $("zonename").textContent = Z.d.name;

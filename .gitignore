@@ -3,6 +3,9 @@ dist
 dist-ssr
 *.local
 .claude/
+# session-hook scratch (CCGS template); this project doesn't use production/
+/production/
+_tmp_*
 
 # Raw art pack — pending licensing confirmation, integrated in stage 5
 /Asset_1/

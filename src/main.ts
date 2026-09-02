@@ -79,3 +79,18 @@ async function boot(): Promise<void> {
 }
 
 void boot();
+
+/* Dev-only debug bridge for the visual smoke harness (scratchpad/smoke.mjs).
+ * `import.meta.env.DEV` is statically false in `vite build`, so this whole
+ * block is dead-code-eliminated from the production bundle. */
+if (import.meta.env.DEV) {
+  void (async () => {
+    const core = await import("./game/core.ts");
+    const state = await import("./game/state.ts");
+    const combat = await import("./game/combat.ts");
+    (window as unknown as { __ember: unknown }).__ember = {
+      S: core.S, P: core.P, W: core.W, joy: core.joy,
+      enterZone: state.enterZone, toHub: state.toHub, die: combat.die,
+    };
+  })();
+}

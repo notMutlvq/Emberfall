@@ -4,9 +4,13 @@
  *   rows 0-3  idle   (down, left, right, up)   —  4 frames (up dir is short)
  *   rows 4-7  walk   (down, left, right, up)   —  6 frames
  *   rows 8-11 attack (down, left, right, up)   —  8 frames
- * The Swordsman sheets are ordered [right, left, down, up]; SRC_ROW_ORDER
- * remaps them to the game's [down, left, right, up]. drawHero() picks the
- * tier from the player level (1-6 / 7-14 / 15+).
+ * The Swordsman sheets are already ordered [down, left, right, up] — same as
+ * the game's dir index (see P.dir in combat.ts) — so SRC_ROW_ORDER is the
+ * identity. (It used to be [2,1,0,3] on the wrong assumption the source was
+ * [right,left,down,up]; that swapped the down/right rows, which is why
+ * moving right showed the down-facing sprite and vice versa — left/up were
+ * untouched since those two positions happen to coincide either way.)
+ * drawHero() picks the tier from the player level (1-6 / 7-14 / 15+).
  *   node scripts/pack-hero.mjs
  */
 import puppeteer from "puppeteer-core";
@@ -14,7 +18,7 @@ import { readFileSync, writeFileSync, existsSync } from "node:fs";
 
 const CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
 const OUT = "src/assets";
-const SRC_ROW_ORDER = [2, 1, 0, 3]; // swordsman row -> game [down,left,right,up]
+const SRC_ROW_ORDER = [0, 1, 2, 3]; // swordsman row -> game [down,left,right,up] (identity)
 const CELL = 64;
 const W = 8 * CELL;
 const H = 12 * CELL;

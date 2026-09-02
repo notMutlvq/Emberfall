@@ -58,6 +58,7 @@ export const ar: Dict = {
   boardSignIn: "سجّل الدخول لرؤية لوحة المتصدرين العالمية.",
   boardEmpty: "لا جولات بعد — كن الأول.",
   boardRow: "{i}. {name} · {cls} · م{level}",
+  lvBadge: "م{lv}",
 
   pickIntro: "هبوطٌ في أعماق قاتلة. الموت ينهي الجولة — لا ينجو سوى المخزن.",
   name: "الاسم",

@@ -65,6 +65,7 @@ export const en = {
   boardSignIn: "Sign in to see the global leaderboard.",
   boardEmpty: "No runs yet — be the first.",
   boardRow: "{i}. {name} · {cls} · lv{level}",
+  lvBadge: "Lv{lv}",
 
   /* ---- class pick ---- */
   pickIntro: "A roguelike descent. Death ends the run — only the stash survives.",
