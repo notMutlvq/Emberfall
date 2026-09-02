@@ -36,11 +36,24 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,png,svg,woff2}"],
+        // Precache the shell + assets + the tiny SFX one-shots (~75 KB). The
+        // music beds (~3 MB) are runtime-cached on first play instead of
+        // bloating the install.
+        globPatterns: ["**/*.{js,css,html,png,svg,woff2}", "sfx/*.ogg"],
         cleanupOutdatedCaches: true,
         // Precache is the local app shell + assets → loads offline up to the
         // login screen. Supabase requests are deliberately never cached.
         runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.includes("/music/"),
+            handler: "CacheFirst",
+            options: {
+              cacheName: "emberfall-music",
+              expiration: { maxEntries: 4, maxAgeSeconds: 60 * 60 * 24 * 90 },
+              cacheableResponse: { statuses: [0, 200] },
+              rangeRequests: true,
+            },
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: "StaleWhileRevalidate",

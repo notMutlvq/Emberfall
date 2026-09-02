@@ -13,6 +13,7 @@ import { autoSlot } from "./combat.ts";
 import { go, paintAll } from "../ui/sheets.ts";
 import { showScreen } from "../ui/screens.ts";
 import { saveRun } from "./save.ts";
+import { music } from "./audio.ts";
 import { t } from "../i18n/index.ts";
 
 export function newRunState(): void {
@@ -45,6 +46,7 @@ export function newRunState(): void {
   S.hp = st.hp;
   S.mp = st.mana;
   genHub();
+  music("camp");
   buildSkills();
   paintAll();
 }
@@ -60,6 +62,7 @@ export function toHub(): void {
   genHub();
   S.zone = -1;
   S.auras = {};
+  music("camp");
   paintAll();
   go("fight");
   saveRun();
@@ -69,6 +72,7 @@ export function enterZone(i: number): void {
   S.zone = i;
   S.run.deepest = Math.max(S.run.deepest, i);
   genZone(i);
+  music("dungeon");
   S.hp = stats().hp;
   S.auras = {};
   go("fight");

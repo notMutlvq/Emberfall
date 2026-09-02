@@ -9,6 +9,7 @@ import { heroPortrait } from "../game/assets.ts";
 import { toast, lootMsg, buildSkills } from "../game/hud.ts";
 import { newRunState } from "../game/state.ts";
 import { genHub, genZone } from "../game/zones.ts";
+import { music } from "../game/audio.ts";
 import { stats } from "../game/items.ts";
 import { resize } from "../game/render.ts";
 import { startLoop } from "../game/engine.ts";
@@ -64,8 +65,13 @@ export function resumeRun(): void {
   if (!d) return toast(t("noRunResume"));
   applyRun(d);
   showScreen("game");
-  if (S.zone < 0) genHub();
-  else genZone(S.zone);
+  if (S.zone < 0) {
+    genHub();
+    music("camp");
+  } else {
+    genZone(S.zone);
+    music("dungeon");
+  }
   const st = stats();
   S.hp = clamp(d.hp ?? st.hp, 1, st.hp);
   S.mp = st.mana;

@@ -21,20 +21,23 @@ up to the login screen.
   touch since the port — fixed. Dungeons now have a "return to camp" gate.
 - Bottom nav trimmed to Explore / Bag / Skills / Settings — Atlas and the
   Workbench are reached from the camp gate and anvil.
-- Settings menu: sound volume/mute, `ar`/`en` language, end-run, log out,
-  wipe saved data. Loading screen. Sound scaffold (`src/game/audio.ts` +
-  `public/sfx/` — silent until files are added).
+- Settings menu: SFX volume, music volume, mute, `ar`/`en` language, end-run,
+  log out, wipe saved data. Loading screen.
+- **Audio**: CC0 one-shots (Kenney Impact/Interface packs) in `public/sfx/*.ogg`
+  + two looping music beds in `public/music/` (`camp.mp3` menu/hub,
+  `dungeon.ogg` zones) — `src/game/audio.ts`. SFX are precached; music is
+  runtime-cached on first play. Missing files degrade to silence.
 
-Art rebrand from the paid `Asset_1/` CraftPix packs (in progress): real
-per-item icons, an animated Swordsman hero that gears up by level,
-graveyard map props + a calmer floor, sprite-animation combat effects, and
-CraftPix monster sprites. `scripts/pack-*.mjs` build the committed atlases
-from `Asset_1/` (gitignored). The HTML **UI chrome is reskinned** from
-CraftPix's Ui pack (`scripts/pack-ui.mjs`) — panel/button 9-slices + a small
-icon atlas, recolored from the pack's stock green/parchment palette to this
-dark-slate + gold one. Only blank, text-free pieces are used; all UI text
-stays HTML/CSS in the Arabic font — the pack's own labeled buttons and
-bitmap font are Latin-only.
+Art rebrand from the paid `Asset_1/` CraftPix packs: real per-item + ground
+icons, an animated Swordsman hero that gears up by level, a graveyard
+tilemap (autotiled walls with drop-shadows, per-zone colour wash, ~22
+props), sprite-animation combat effects incl. lightning, and CraftPix
+monster sprites. `scripts/pack-*.mjs` build the committed atlases from
+`Asset_1/` (gitignored). The **UI** uses CraftPix gold buttons + a small icon
+atlas (`scripts/pack-ui.mjs`, recoloured to dark-slate + gold); panels are
+plain CSS cards. Screens polished into a coherent game UI (equipment
+paper-doll, framed death-summary card, ember-lit menu). All UI text stays
+HTML/CSS in the Arabic font — the pack's bitmap font is Latin-only.
 
 ### Base path
 
@@ -119,14 +122,15 @@ replay validation, which isn't worth it for a handful of players. Use the
 ```
 /src
   /game     engine, state, classes, abilities, items, zones, combat, render, hud, quests
-            save (run mirror + stash/meta persistence), audio (sound scaffold)
+            save (run mirror + stash/meta persistence), audio (sfx + music bed)
   /ui       screens, auth, mainmenu (menu + leaderboard), menu (class pick),
             settings, sheets (bag / skills / craft / atlas)
   /net      supabase client, username/password auth, player_state, leaderboard
   /i18n     ar.ts (shipped) + en.ts (type source / debug) + t() and applyStaticI18n()
   /assets   extracted PNGs + CREDITS.md (CraftPix terms verified 2026-09-01)
 /public     PWA icons (192/512/maskable), apple-touch-icon, favicon.svg
-            /sfx  drop-in sound effects (empty by default — see its README)
+            /sfx    CC0 one-shot .ogg effects (see its README for the mapping)
+            /music  camp.mp3 + dungeon.ogg loops (CC0)
 /supabase   schema.sql, policies.sql, functions/submit-run/ (edge function)
 /.github/workflows/deploy.yml   build + publish dist/ to GitHub Pages
 ```

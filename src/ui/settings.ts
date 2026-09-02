@@ -1,7 +1,7 @@
 /* Settings overlay — sound, language, session controls, wipe. Reachable
  * from the main-menu cog and the in-game nav. */
 import { $ } from "../game/core.ts";
-import { getVolume, isMuted, setVolume, setMuted } from "../game/audio.ts";
+import { getVolume, isMuted, setVolume, setMuted, getMusicVolume, setMusicVolume } from "../game/audio.ts";
 import { getLocale, setLocale, t, type Locale } from "../i18n/index.ts";
 import { clearRun, detachUser } from "../game/save.ts";
 import { toast } from "../game/hud.ts";
@@ -20,6 +20,8 @@ export function initSettings(exitToMenu: () => void, loggedOut: () => void): voi
 
   const vol = $("set-vol") as HTMLInputElement;
   vol.addEventListener("input", () => setVolume(Number(vol.value) / 100));
+  const mvol = $("set-mvol") as HTMLInputElement;
+  mvol.addEventListener("input", () => setMusicVolume(Number(mvol.value) / 100));
   const mute = $("set-mute") as HTMLInputElement;
   mute.addEventListener("change", () => setMuted(mute.checked));
 
@@ -72,6 +74,7 @@ export function openSettings(): void {
   const inRun = ($("nav") as HTMLElement).style.display === "grid";
   const signedIn = ($("mm-logout") as HTMLElement).style.display !== "none";
   ($("set-vol") as HTMLInputElement).value = String(Math.round(getVolume() * 100));
+  ($("set-mvol") as HTMLInputElement).value = String(Math.round(getMusicVolume() * 100));
   ($("set-mute") as HTMLInputElement).checked = isMuted();
   ($("set-tomenu") as HTMLElement).style.display = inRun ? "block" : "none";
   ($("set-logout") as HTMLElement).style.display = signedIn ? "block" : "none";

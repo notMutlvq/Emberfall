@@ -18,6 +18,20 @@ below are this repo's; original pack names are noted per source.
 CC0 — public domain, no restrictions, attribution not required. Credited anyway:
 [kenney.nl](https://kenney.nl).
 
+## Audio — CC0
+
+- `public/sfx/*.ogg` — Kenney **Impact Sounds** + **Interface Sounds** packs
+  (CC0). Per-file mapping in `public/sfx/README.md`.
+- `public/music/dungeon.ogg` — "Loopable Dungeon Ambience" by **JaggedStone**,
+  OpenGameArt, CC0 — https://opengameart.org/content/loopable-dungeon-ambience
+- `public/music/camp.mp3` — "Town Theme (RPG)" by **cynicmusic**
+  (cynicmusic.com / pixelsphere.org), OpenGameArt, CC0 —
+  https://opengameart.org/content/town-theme-rpg
+
+All CC0: usable in commercial projects, no attribution required (credited
+regardless). The SFX packs ship `.ogg`; kept as-is (all current browsers
+decode Ogg Vorbis). Missing files degrade to silence in `src/game/audio.ts`.
+
 ## CraftPix — licensed, redistribution prohibited
 
 - `boss.png` — CraftPix undead boss sprite (crowned lich).

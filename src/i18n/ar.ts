@@ -17,6 +17,7 @@ export const ar: Dict = {
   loading: "جارٍ التحميل…",
   setSound: "الصوت",
   setVolume: "مستوى الصوت",
+  setMusicVolume: "مستوى الموسيقى",
   setMute: "كتم الصوت",
   setLanguage: "اللغة",
   setAbandon: "إنهاء الجولة والعودة للقائمة",
@@ -24,7 +25,7 @@ export const ar: Dict = {
   wipeConfirm: "انقر مجدداً لمسح جولتك ومخزنك.",
   wipeDone: "مُسحت البيانات المحفوظة.",
   setVersion: "الإصدار {v}",
-  setCredits: "الرسومات: Kenney، CraftPix. الخط: Tajawal.",
+  setCredits: "الرسومات: Kenney، CraftPix. الصوت: Kenney، OpenGameArt. الخط: Tajawal.",
 
   authIntro: "سجّل الدخول للّعب. أفضل جولاتك تُدرَج على اللوحة.",
   login: "تسجيل الدخول",

@@ -18,7 +18,7 @@ import { toHub } from "./state.ts";
 import { recordRunEnd } from "./save.ts";
 import { submitRun } from "../net/leaderboard.ts";
 import { t } from "../i18n/index.ts";
-import { sfx, stepSound } from "./audio.ts";
+import { sfx, stepSound, music } from "./audio.ts";
 
 export const AI_R = 17;
 
@@ -476,6 +476,7 @@ export function die(): void {
     : `<div class="slab">${t("bestRunSoFar")}</div>${t("noBestYet")}`;
   $("overtitle").textContent = score > (prev ? (prev.score ?? 0) : 0) ? t("aNewBest") : t("youFell");
   ($("over") as HTMLElement).style.display = "flex";
+  music("camp");
   // run is over: drop the mirror, flush stash + best score + run count
   recordRunEnd();
 
@@ -529,6 +530,7 @@ export function useSlot(i: number): void {
     return;
   }
   S.mp -= cost;
+  sfx("ability", { vol: 0.5 });
   const dmg = st.atk * (ab.mult || 0) * (1 + m.dmg / 100);
   const tgt = nearestMob(9);
   const hits = 1 + m.hits;

@@ -7,6 +7,7 @@ import { CLASSES } from "../game/classes.ts";
 import { online } from "../net/supabase.ts";
 import { signOut, type Profile } from "../net/auth.ts";
 import { hasSavedRun, bestScore } from "../game/save.ts";
+import { music } from "../game/audio.ts";
 import { fetchTopRuns, fetchRank, type BoardRow } from "../net/leaderboard.ts";
 import { t } from "../i18n/index.ts";
 import { showScreen } from "./screens.ts";
@@ -43,6 +44,7 @@ export function showMainMenu(p: Profile | null): void {
   ($("mm-resume") as HTMLElement).style.display = hasSavedRun() ? "block" : "none";
   void refreshBoard();
   showScreen("menu");
+  music("camp");
 }
 
 function rowHTML(r: BoardRow, i: number): string {

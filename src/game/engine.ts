@@ -7,6 +7,7 @@
  */
 import { S, joy, $, type ClassKey } from "./core.ts";
 import { update, keys, useSlot, drinkPotion } from "./combat.ts";
+import { uiClick } from "./audio.ts";
 import { draw } from "./render.ts";
 import { interact, takeQuest } from "./quests.ts";
 import {
@@ -147,6 +148,7 @@ function handleTap(e: Event): void {
   }
   const d = t.dataset;
   if ((d.sk !== undefined || d.act === "potion" || d.act === "interact") && Date.now() - fastTap < 500) return;
+  if (d.sk === undefined && d.act !== "potion" && d.act !== "interact") uiClick();
 
   if (d.act === "newrun") return newRun();
   if (d.act === "popclose") return void $("pop").classList.remove("on");
