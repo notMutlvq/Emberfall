@@ -231,6 +231,7 @@ export const ar: Dict = {
   bestFindItem: "{rarity} {name} (مستوى العنصر {ilvl})",
   nothingWorthKeeping: "لا شيء يستحق الاحتفاظ",
   scoreLine: "النتيجة {score}",
+  scoreLabel: "النقاط",
   bestRunSoFar: "أفضل جولة حتى الآن",
   bestRunLine: "{name} {cls} · المستوى {lv} · {zones} مناطق · النتيجة {score}",
   noBestYet: "هذه — لا شيء لتتجاوزه بعد",

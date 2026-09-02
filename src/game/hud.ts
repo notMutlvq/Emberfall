@@ -12,7 +12,7 @@ import { t } from "../i18n/index.ts";
 
 interface SkillBtn {
   b: HTMLElement;
-  cd: HTMLElement;
+  cd: HTMLElement | null;
   lb: HTMLElement;
 }
 let SKB: SkillBtn[] = [];
@@ -21,13 +21,14 @@ export function buildSkills(): void {
   $("skills").innerHTML = S.slots
     .map((id, i) => {
       const ab = id ? abById(id) : null;
-      return `<button class="sk e-${ab ? ab.el : "none"}" data-sk="${i}" ${ab ? "" : 'style="opacity:.3"'}>
-   <div class="cd"></div>${ab ? `<span class="mp">${abCost(ab)}</span>` : ""}<span class="lb">${ab ? ab.name.replace("\n", "<br>") : "—"}</span></button>`;
+      if (!ab) return `<button class="sk empty" data-sk="${i}"><span class="lb">+</span></button>`;
+      return `<button class="sk e-${ab.el}" data-sk="${i}">
+   <div class="cd"></div><span class="mp">${abCost(ab)}</span><span class="lb">${ab.name.replace("\n", "<br>")}</span></button>`;
     })
     .join("");
   SKB = [...document.querySelectorAll<HTMLElement>(".sk")].map((b) => ({
     b,
-    cd: b.querySelector<HTMLElement>(".cd")!,
+    cd: b.querySelector<HTMLElement>(".cd"),
     lb: b.querySelector<HTMLElement>(".lb")!,
   }));
 }
@@ -49,10 +50,7 @@ export function paintHud(force?: boolean): void {
     const o = SKB[i];
     if (!o) return;
     const ab = id ? abById(id) : null;
-    if (!ab) {
-      o.cd.style.height = "0%";
-      return;
-    }
+    if (!ab || !o.cd) return;
     const m = abMods(ab);
     const cd = ab.cd * (1 - Math.min(60, m.cd) / 100);
     const rem = Math.max(0, (ab.until || 0) - now);

@@ -90,14 +90,17 @@
 
   <div id="pop"><div id="popin"></div></div>
   <div id="toast"></div>
-  <div id="over" style="position:absolute;inset:0;z-index:21;background:var(--sheet);padding:22px;display:none;flex-direction:column;justify-content:center">
-    <h1 class="pixel" id="overtitle" style="font-size:20px;margin-bottom:4px">EMBERFALL</h1>
-    <p class="meta" id="oversub" style="margin-bottom:16px"></p>
-    <div class="statbox" id="overstats"></div>
-    <div class="statbox" id="overbest"></div>
-    <p class="meta" id="oversubmit"></p>
-    <button class="btn go wide" data-act="newrun" style="padding:12px" data-i18n="beginNewRun">ابدأ جولة جديدة</button>
-    <button class="btn wide" id="btn-over-menu" style="padding:10px;margin-top:8px" data-i18n="mainMenu">القائمة الرئيسية</button>
+  <div id="over">
+    <div id="overcard">
+      <h1 class="pixel" id="overtitle">EMBERFALL</h1>
+      <p class="meta" id="oversub"></p>
+      <div id="overscore"><span class="v">0</span><span class="k" data-i18n="scoreLabel">النقاط</span></div>
+      <div class="statbox" id="overstats"></div>
+      <div class="statbox" id="overbest"></div>
+      <p class="meta" id="oversubmit"></p>
+      <button class="btn go wide" data-act="newrun" style="padding:12px" data-i18n="beginNewRun">ابدأ جولة جديدة</button>
+      <button class="btn wide" id="btn-over-menu" style="padding:10px;margin-top:8px" data-i18n="mainMenu">القائمة الرئيسية</button>
+    </div>
   </div>
 
   <div id="auth">

@@ -249,6 +249,7 @@ export const en = {
   bestFindItem: "{rarity} {name} (ilvl {ilvl})",
   nothingWorthKeeping: "nothing worth keeping",
   scoreLine: "score {score}",
+  scoreLabel: "score",
   bestRunSoFar: "Best run so far",
   bestRunLine: "{name} the {cls} · level {lv} · {zones} zones · score {score}",
   noBestYet: "this one — nothing to beat yet",

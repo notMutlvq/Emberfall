@@ -463,8 +463,8 @@ export function die(): void {
    ${t("zonesDeepest", { zones: R.zones, deepest: ZONES[R.deepest].name })}<br>
    ${t("killsElitesBosses", { kills: R.kills, elites: R.elites, bosses: R.bosses })}<br>
    ${t("goldEarned", { gold: R.gold })}<br>
-   ${t("bestFind", { find })}<br>
-   <span style="color:var(--gold)">${t("scoreLine", { score })}</span>`;
+   ${t("bestFind", { find })}`;
+  ($("overscore").querySelector(".v") as HTMLElement).textContent = String(score);
   $("overbest").innerHTML = prev
     ? `<div class="slab">${t("bestRunSoFar")}</div>${t("bestRunLine", {
         name: prev.name || "",

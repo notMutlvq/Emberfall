@@ -5,12 +5,13 @@
  * Physical left/right is deliberate on the in-view game controls; logical
  * inset-inline / border-inline is used everywhere the UI should mirror.
  *
- * UI chrome (panel/button 9-slices + the small icon atlas) is packed by
+ * UI chrome: the gold pill BUTTONS + the small icon atlas are packed by
  * scripts/pack-ui.mjs from the CraftPix "Ui" pack (Asset_1/Ui/), recolored
  * from its stock green/parchment palette to this dark-slate + gold one —
- * see CREDITS.md. Only blank, text-free pieces are used; all button/panel
- * labels stay HTML/CSS text in the Arabic font (the pack's own labels and
- * bitmap font are Latin-only).
+ * see CREDITS.md. Only blank, text-free pieces are used; all labels stay
+ * HTML/CSS text in the Arabic font (the pack's bitmap font is Latin-only).
+ * PANELS are plain CSS (slate gradient + hairline border + gold-tick .slab
+ * accents) — the pack's torn-paper panel edges frayed under border-image.
  */
 :root{--ink:#12141f;--sheet:#1e2233;--panel:#2a2f45;--panel2:#39405c;--line:#525a7d;
 --bone:#f4f1e6;--dim:#b3b9d0;--gold:#ffc94d;--blood:#ef6a5e;--moss:#7fd08d;--arc:#79b4ea;
@@ -27,14 +28,13 @@ position:relative;overflow:hidden;display:flex;flex-direction:column}
 #view{flex:1;position:relative;overflow:hidden;background:#0b0c10;min-height:0}
 #cv{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated}
 
-/* 9-slice UI chrome (src/assets/ui-panel.png, ui-button*.png — see header
- * comment). ui-panel.png is a gold title strip over a slate body; sliced
- * asymmetrically (tall top slice, thin sides/bottom) so the top border draws
- * the gold strip and the other three draw the plain frame. ui-button.png is
- * a plain gold pill — bright fill, so button text is dark ink, not bone. */
-.k-panel{border-style:solid;border-color:transparent;border-width:18px 8px 8px 8px;
- border-image:url(./assets/ui-panel.png) 14 4 4 4 fill stretch;
- image-rendering:pixelated;color:var(--bone)}
+/* ui-button.png is a plain gold pill (bright fill -> dark ink text). The
+ * pack's framed panel (ui-panel.png) is now used only as a thin bezel on the
+ * HUD stat bars (.barf) — its torn-paper panel edges frayed under border-image.
+ * slate panel — clean gradient card with a hairline frame + gold-tick .slab */
+.k-panel,.statbox,.cchoice,#popin,#overcard,.eqdoll{
+ background:linear-gradient(165deg,#2b3048,#222840);border:1px solid var(--line);border-radius:5px;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 3px 10px rgba(0,0,0,.35);color:var(--bone)}
 .k-btn{border:8px solid transparent;border-image:url(./assets/ui-button.png) 4 fill stretch;
  image-rendering:pixelated;background:none;color:#2a2418;font-family:inherit;font-size:11px;padding:0 2px;
  text-shadow:0 1px 0 rgba(255,255,255,.25)}
@@ -56,7 +56,10 @@ background:linear-gradient(180deg,rgba(14,15,21,.95),rgba(14,15,21,0))}
 #mpwrap{margin-top:3px;height:8px}#mpbar{height:100%;background:var(--arc)}
 .sk.nomana{filter:grayscale(.7) brightness(.7)}
 .sk .mp{position:absolute;inset-inline-end:3px;top:2px;font-size:8px;color:#9fd0ff;z-index:3}
-#objective{margin-top:5px;font-size:10px;color:var(--gold)}
+#objective{margin-top:6px;font-size:10px;color:var(--gold);display:inline-block;max-width:64%;
+ background:rgba(14,15,21,.72);border-inline-start:2px solid var(--gold);
+ padding:3px 8px 3px 6px;border-radius:0 3px 3px 0}
+#objective:empty{display:none}
 
 #xpbottom{position:absolute;left:10px;right:10px;bottom:6px;z-index:6;display:flex;
  align-items:center;gap:6px;pointer-events:none}
@@ -71,16 +74,17 @@ background:linear-gradient(180deg,rgba(14,15,21,.95),rgba(14,15,21,0))}
 #sknob{width:44px;height:44px;background:rgba(232,228,214,.55)}
 #stick.on #sbase,#stick.on #sknob{opacity:1}
 
-#skills{position:absolute;left:9px;bottom:32px;z-index:7;display:flex;flex-direction:column-reverse;gap:8px;align-items:flex-start}
-.sk{width:60px;height:60px;position:relative;overflow:hidden;font-family:"Tajawal",monospace;font-weight:500;font-size:9px;
- border:9px solid transparent;border-image:url(./assets/ui-button.png) 4 fill stretch;
+#skills{position:absolute;left:9px;bottom:34px;z-index:7;display:flex;flex-direction:column-reverse;gap:7px;align-items:flex-start}
+.sk{width:56px;height:56px;position:relative;overflow:hidden;font-family:"Tajawal",monospace;font-weight:500;font-size:9px;
+ border:8px solid transparent;border-image:url(./assets/ui-button.png) 4 fill stretch;
  background:none;color:#2a2418;line-height:1.15;padding:0;image-rendering:pixelated}
-.sk .cd{position:absolute;left:0;bottom:0;width:100%;background:rgba(0,0,0,.7);pointer-events:none}
+.sk.empty{border:2px dashed rgba(232,228,214,.16);background:rgba(0,0,0,.32);border-radius:3px;opacity:1}
+.sk .cd{position:absolute;left:0;bottom:0;width:100%;background:rgba(0,0,0,.66);pointer-events:none}
 .sk .lb{position:relative;z-index:2;display:block;padding:0 1px}
-.sk.e-fire{box-shadow:inset 0 0 0 2px rgba(224,122,60,.9)}
-.sk.e-cold{box-shadow:inset 0 0 0 2px rgba(111,195,217,.9)}
-.sk.e-light{box-shadow:inset 0 0 0 2px rgba(201,168,240,.9)}
-.sk.e-none{box-shadow:inset 0 0 0 2px rgba(95,154,106,.9)}
+.sk.e-fire{box-shadow:inset 0 0 0 2px rgba(224,122,60,.9),0 0 7px rgba(224,122,60,.5)}
+.sk.e-cold{box-shadow:inset 0 0 0 2px rgba(111,195,217,.9),0 0 7px rgba(111,195,217,.5)}
+.sk.e-light{box-shadow:inset 0 0 0 2px rgba(201,168,240,.9),0 0 7px rgba(201,168,240,.5)}
+.sk.e-none{box-shadow:inset 0 0 0 2px rgba(95,154,106,.9),0 0 7px rgba(95,154,106,.45)}
 #potion{position:absolute;left:78px;bottom:34px;z-index:7;width:48px;height:48px;
  border:8px solid transparent;border-image:url(./assets/ui-button.png) 4 fill stretch;
  background:none;color:#2a2418;font-size:12px;font-family:"Silkscreen",monospace;image-rendering:pixelated}
@@ -110,24 +114,42 @@ padding-bottom:env(safe-area-inset-bottom)}
 
 .sheet{position:absolute;inset:0;background:var(--sheet);z-index:8;display:none;flex-direction:column}
 .sheet.on{display:flex}
-.shead{padding:11px 12px;border-bottom:1px solid var(--line);flex:none}
-.shead h2{font-size:14px;font-family:"Tajawal",monospace;font-weight:700}.shead p{font-size:10px;color:var(--dim);margin-top:3px}
+.shead{padding:10px 12px;border-bottom:2px solid var(--gold);flex:none;
+ background:linear-gradient(180deg,var(--panel),var(--sheet))}
+.shead h2{font-size:14px;font-family:"Tajawal",monospace;font-weight:700;color:var(--gold);
+ display:inline-block;border-bottom:2px solid transparent}
+.shead p{font-size:10px;color:var(--dim);margin-top:3px}
 .sbody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px}
 
-#eqstrip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
-.eqslot{border:1px solid var(--line);background:var(--panel);padding:6px;text-align:center}
-.eqslot .lab{font-size:9px;color:var(--dim)}.eqslot .nm{font-size:9px;margin-top:2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#eqstrip{display:flex;gap:10px;align-items:stretch;margin-bottom:12px}
+.eqdoll{flex:none;width:78px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:6px}
+.eqdoll img{width:52px;height:52px;image-rendering:pixelated;
+ filter:drop-shadow(0 2px 3px rgba(0,0,0,.55))}
+.eqdoll span{font-size:9px;color:var(--gold);font-weight:700;text-align:center;line-height:1.1}
+.eqslots{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.eqslot{border:1px solid var(--line);background:linear-gradient(160deg,#2f3550,#20243a);padding:6px 4px;
+ text-align:center;border-radius:3px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px}
+.eqslot .lab{font-size:9px;color:var(--dim)}
+.eqslot img{width:30px;height:30px;image-rendering:pixelated}
+.eqslot .ph{width:30px;height:30px;line-height:30px;color:#343a4f}
+.eqslot .nm{font-size:9px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;max-width:100%}
+.eqslot.rm{border-color:var(--m)}.eqslot.rr{border-color:var(--r)}.eqslot.rl{border-color:var(--l)}
 #grid,#cgrid,#stashgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.cell{aspect-ratio:1;border:1px solid var(--line);background:var(--panel);display:flex;align-items:center;justify-content:center;position:relative}
-.cell.empty{background:#141620;border-style:dashed;border-color:#242736}
-.cell img{width:74%;image-rendering:pixelated}
-.cell .pl{position:absolute;inset-inline-end:2px;bottom:0;font-size:9px;color:var(--gold)}
-.cell.sel{border-color:var(--gold)}
-.cell.rn{border-color:#3c4152}.cell.rm{border-color:var(--m)}.cell.rr{border-color:var(--r)}.cell.rl{border-color:var(--l)}
-.statbox{border-style:solid;border-color:transparent;border-width:16px 8px 8px 8px;
- border-image:url(./assets/ui-panel.png) 14 4 4 4 fill stretch;image-rendering:pixelated;
- padding:9px;font-size:11px;margin-bottom:14px;color:var(--bone)}
-.slab{font-size:9px;color:var(--dim);margin-bottom:4px}
+.cell{aspect-ratio:1;border:1px solid var(--line);background:linear-gradient(160deg,#2f3550,#20243a);
+ display:flex;align-items:center;justify-content:center;position:relative;border-radius:3px;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.cell.empty{background:#12141d;border-color:#242736;box-shadow:inset 0 0 6px rgba(0,0,0,.5)}
+.cell img{width:78%;image-rendering:pixelated;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+.cell .pl{position:absolute;inset-inline-end:2px;bottom:0;font-size:9px;color:var(--gold);
+ text-shadow:0 1px 2px #000}
+.cell.sel{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 6px rgba(255,201,77,.5)}
+.cell.rn{border-color:#3c4152}
+.cell.rm{border-color:var(--m);box-shadow:inset 0 0 8px rgba(121,180,234,.28)}
+.cell.rr{border-color:var(--r);box-shadow:inset 0 0 8px rgba(255,201,77,.3)}
+.cell.rl{border-color:var(--l);box-shadow:inset 0 0 9px rgba(224,138,92,.36)}
+.statbox{padding:11px;font-size:11px;margin-bottom:14px}
+.slab{font-size:9px;color:var(--dim);margin-bottom:5px;padding-inline-start:6px;
+ border-inline-start:2px solid var(--gold);line-height:1.2}
 .btn{border:7px solid transparent;border-image:url(./assets/ui-button.png) 4 fill stretch;
  background:none;color:#2a2418;padding:2px 5px;font-family:inherit;font-size:11px;
  image-rendering:pixelated;text-shadow:0 1px 0 rgba(255,255,255,.25)}
@@ -169,9 +191,8 @@ padding-bottom:env(safe-area-inset-bottom)}
 
 #pop{position:absolute;inset:0;z-index:10;background:rgba(7,8,11,.85);display:none;align-items:center;justify-content:center;padding:20px}
 #pop.on{display:flex}
-#popin{background:none;border-style:solid;border-color:transparent;border-width:20px 10px 10px 10px;
- border-image:url(./assets/ui-panel.png) 14 4 4 4 fill stretch;image-rendering:pixelated;
- padding:14px;width:100%;max-width:330px;max-height:80%;overflow-y:auto;color:var(--bone)}
+#popin{padding:16px;width:100%;max-width:330px;max-height:80%;overflow-y:auto;
+ box-shadow:0 0 0 2px var(--gold),0 12px 40px rgba(0,0,0,.6)!important}
 #toast{position:absolute;left:50%;transform:translateX(-50%);top:38%;background:rgba(26,28,38,.96);
 border:1px solid var(--gold);padding:7px 13px;font-size:11px;opacity:0;transition:opacity .2s;z-index:12;pointer-events:none;white-space:nowrap}
 #toast.on{opacity:1}
@@ -182,8 +203,24 @@ border:1px solid var(--gold);padding:7px 13px;font-size:11px;opacity:0;transitio
 @keyframes fade{0%,60%{opacity:1}100%{opacity:0}}
 #pick,#auth,#mainmenu{position:absolute;inset:0;background:var(--sheet);padding:20px;display:none;flex-direction:column;justify-content:center;overflow-y:auto}
 #pick{z-index:20}
-#mainmenu{z-index:24}
+#mainmenu{z-index:24;background:
+ radial-gradient(120% 60% at 50% 0%,rgba(224,122,60,.18),transparent 60%),
+ radial-gradient(90% 50% at 50% 100%,rgba(255,201,77,.08),transparent 55%),
+ var(--sheet)}
 #auth{z-index:25}
+
+/* ---- death / run-summary screen ---- */
+#over{position:absolute;inset:0;z-index:21;display:none;align-items:center;justify-content:center;padding:16px;
+ background:radial-gradient(130% 80% at 50% 40%,rgba(30,15,12,.7),rgba(7,8,11,.94))}
+#overcard{width:100%;max-width:340px;max-height:100%;overflow-y:auto;padding:20px 16px;
+ box-shadow:0 0 0 2px var(--gold),0 16px 50px rgba(0,0,0,.7)!important}
+#overtitle{font-family:"Tajawal",monospace;font-weight:700;font-size:19px;color:var(--gold);margin-bottom:3px;text-align:center}
+#oversub{text-align:center;margin-bottom:12px}
+#overscore{text-align:center;margin-bottom:14px;line-height:1}
+#overscore .v{display:block;font-family:"Silkscreen",monospace;font-size:38px;color:var(--bone);
+ text-shadow:0 0 14px rgba(255,201,77,.55)}
+#overscore .k{font-size:9px;color:var(--dim)}
+#oversubmit{text-align:center;min-height:12px;margin:6px 0}
 #pick h1,#auth h1,#mainmenu h1{font-family:"Silkscreen",monospace;font-size:22px;margin-bottom:2px;color:var(--gold)}
 #pick p.s,#auth p.s,#mainmenu p.s{color:var(--dim);font-size:11px;margin-bottom:14px}
 #nameRow{margin-bottom:14px}
@@ -198,9 +235,8 @@ border:1px solid var(--gold);padding:7px 13px;font-size:11px;opacity:0;transitio
 .cbars b{font-weight:400;color:var(--bone)}
 .bar3{display:inline-block;width:52px;height:5px;background:#000;vertical-align:middle;margin:0 4px}
 .bar3 i{display:block;height:100%}
-.cchoice{border-style:solid;border-color:transparent;border-width:16px 10px 10px 10px;
- border-image:url(./assets/ui-panel.png) 14 4 4 4 fill stretch;image-rendering:pixelated;
- padding:12px;margin-bottom:10px;display:flex;gap:12px;align-items:center;color:var(--bone)}
+.cchoice{padding:12px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+.cchoice.on{border-color:var(--gold)}
 .cchoice b{font-family:"Tajawal",monospace;font-weight:700;font-size:13px;display:block;margin-bottom:3px}
 .cchoice .d{font-size:10px;color:var(--dim);line-height:1.4}
 
@@ -231,3 +267,12 @@ border:1px solid var(--gold);padding:7px 13px;font-size:11px;opacity:0;transitio
 #loading .lbar i{display:block;height:100%;width:30%;background:var(--gold);animation:lslide 1s linear infinite}
 @keyframes lslide{0%{margin-inline-start:-30%}100%{margin-inline-start:160px}}
 #loading .lmsg{font-size:11px;color:var(--dim)}
+
+/* respect the OS "reduce motion" setting — kill non-essential animation
+ * (loading pulse, loot ticker fade still needs to clear itself, so keep it
+ * but instant). Canvas render-loop effects are gameplay and stay. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;
+   transition-duration:.001ms!important}
+  #loading .lflame{animation:none;opacity:.9}
+}

@@ -3,7 +3,7 @@
  * emberfall-v9.html. Strings go through t(); the document is RTL.
  */
 import { S, $, RARITY, ZONES, AFFIXES, type Item, type Slot } from "../game/core.ts";
-import { iconFor } from "../game/assets.ts";
+import { iconFor, heroPortrait } from "../game/assets.ts";
 import { stats, matTier, allItems, itemScore, rollAff, affLabel } from "../game/items.ts";
 import { abList, abNodes, abCost, tierOpen } from "../game/abilities.ts";
 import { paintHud, toast, buildSkills } from "../game/hud.ts";
@@ -21,18 +21,22 @@ function cellHTML(it: Item, sel?: boolean): string {
 }
 
 export function paintGear(): void {
-  ($("eqstrip") as HTMLElement).innerHTML = (["weapon", "armor", "ring"] as Slot[])
+  const slots = (["weapon", "armor", "ring"] as Slot[])
     .map((sl) => {
       const it = S.eq[sl];
-      return `<div class="eqslot" ${it ? `data-uid="${it.uid}"` : ""}><div class="lab">${slotLabel(sl)}</div>
+      return `<div class="eqslot ${it ? "r" + RARITY[it.rar].k : ""}" ${it ? `data-uid="${it.uid}"` : ""}>
+   <div class="lab">${slotLabel(sl)}</div>
    ${
      it
-       ? `<img src="${iconFor(it)}" style="width:32px;image-rendering:pixelated">
+       ? `<img src="${iconFor(it)}" alt="">
     <div class="nm ${RARITY[it.rar].k}">${it.name}${it.plus ? " +" + it.plus : ""}</div>`
-       : `<div style="height:32px;line-height:32px;color:#343a4f">—</div><div class="nm meta">${t("empty")}</div>`
+       : `<div class="ph">—</div><div class="nm meta">${t("empty")}</div>`
    }</div>`;
     })
     .join("");
+  ($("eqstrip") as HTMLElement).innerHTML =
+    `<div class="eqdoll"><img src="${heroPortrait(S.cls!)}" alt=""><span>${CLASSES[S.cls!].name}</span></div>
+   <div class="eqslots">${slots}</div>`;
   const st = stats();
   $("stats").innerHTML =
     `${t("statLine1", { atk: st.atk, def: st.def, resist: st.resist })}<br>
