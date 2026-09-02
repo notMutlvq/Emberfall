@@ -29,9 +29,12 @@ Art rebrand from the paid `Asset_1/` CraftPix packs (in progress): real
 per-item icons, an animated Swordsman hero that gears up by level,
 graveyard map props + a calmer floor, sprite-animation combat effects, and
 CraftPix monster sprites. `scripts/pack-*.mjs` build the committed atlases
-from `Asset_1/` (gitignored). The HTML **UI kit is deliberately not
-reskinned** — the current dark-slate UI is clean and fully Arabic, and the
-CraftPix kit's bitmap font is Latin-only.
+from `Asset_1/` (gitignored). The HTML **UI chrome is reskinned** from
+CraftPix's Ui pack (`scripts/pack-ui.mjs`) — panel/button 9-slices + a small
+icon atlas, recolored from the pack's stock green/parchment palette to this
+dark-slate + gold one. Only blank, text-free pieces are used; all UI text
+stays HTML/CSS in the Arabic font — the pack's own labeled buttons and
+bitmap font are Latin-only.
 
 ### Base path
 

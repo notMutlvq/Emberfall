@@ -5,11 +5,12 @@ below are this repo's; original pack names are noted per source.
 
 ## Kenney — CC0
 
-- `tilesheet.png` — Kenney **Tiny Dungeon** tileset (floors, walls, props, chest,
-  stash, anvil, gate, potion, monster tiles, NPC portraits).
-- `env.png`, `props.png` — companion environment/prop strips from the same pack.
-- `ui-panel.png`, `ui-button.png`, `ui-button-active.png` — Kenney **Pixel UI Pack**
-  9-slice panel/button borders.
+- `tilesheet.png` — Kenney **Tiny Dungeon** tileset (chest, stash, anvil, gate,
+  potion, monster tiles, NPC portraits). The floor/wall cells it also carried
+  (40, 48–51, and the 125 rubble tile) are now re-skinned from CraftPix — see
+  below. The `ui-panel.png` / `ui-button.png` / `ui-button-active.png` 9-slices
+  that used to come from Kenney's **Pixel UI Pack** are now packed from
+  CraftPix's Ui pack instead (see below) — Kenney's UI pack is no longer used.
 
 CC0 — public domain, no restrictions, attribution not required. Credited anyway:
 [kenney.nl](https://kenney.nl).
@@ -22,11 +23,23 @@ CC0 — public domain, no restrictions, attribution not required. Credited anywa
 - `mobs.png` — `scripts/pack-mobs.mjs` (8 monster icons).
 - `props.png` — `scripts/pack-props.mjs` (14 graveyard decorations).
 - `fx_fire/burst/ice.png` — `scripts/pack-fx.mjs` (10-frame effect strips).
+- `env.png` — `scripts/pack-env.mjs`: the dungeon ground strip (grey flagstone +
+  tan cobblestone floors, dark cave-rock walls) from `Asset_1/Map/Water_coasts.png`
+  and `Asset_1/Map/Ground_rocks.png`. The same script re-skins the floor/wall
+  cells still read from `tilesheet.png` (40, 48–51, 125) to match.
+- `ui-panel.png`, `ui-button.png`, `ui-button-active.png`, `ui-icons.png` —
+  `scripts/pack-ui.mjs`: blank, text-free panel/button/icon pieces from the
+  CraftPix **Ui** pack (`Asset_1/Ui/`), recolored from its stock green/tan
+  parchment palette to this game's dark-slate + gold one (see the script's
+  header comment for the recolor approach). Replaces the Kenney `ui-panel.png`
+  / `ui-button.png` / `ui-button-active.png` 9-slices. The pack's own labeled
+  buttons ("RESUME", "QUIT", …) and bitmap font are Latin-only and are not
+  used — all UI text stays HTML/CSS in the Arabic font.
 
 All the above are packed from **paid CraftPix packs** in `Asset_1/`, which is
 gitignored — only the packed atlases are committed. Owner holds a CraftPix
-licence. `tilesheet.png` / `env.png` / the `ui-*` 9-slices are still Kenney
-(CC0). The HTML UI has not been reskinned.
+licence. The remaining `tilesheet.png` cells (chest, stash, anvil, gate,
+potion, monster tiles, NPC portraits) are still Kenney (CC0).
 
 **Verified against craftpix.net/file-licenses on 2026-09-01** (stage 6, pre-deploy):
 
@@ -49,5 +62,6 @@ No attribution string is required in-product.
 
 - The player character (`hero.png`) is an unclothed base sprite meant for
   layering — a clothing layer is not yet made.
-- Regular monster tiles are still Kenney `tilesheet.png` tiles and visually
-  clash with the CraftPix hero/ground; matching monster art is still needed.
+- The object tiles still read from `tilesheet.png` (chest, stash, anvil, gate,
+  potion, NPC portraits) are Kenney and clash with the CraftPix ground; matching
+  object art is still needed.
