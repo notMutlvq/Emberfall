@@ -91,6 +91,7 @@ if (import.meta.env.DEV) {
     (window as unknown as { __ember: unknown }).__ember = {
       S: core.S, P: core.P, W: core.W, joy: core.joy,
       enterZone: state.enterZone, toHub: state.toHub, die: combat.die,
+      dropLoot: combat.dropLoot, useSlot: combat.useSlot,
     };
   })();
 }

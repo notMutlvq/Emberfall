@@ -19,6 +19,8 @@ const jobs = [
   { dir: "Explosion", re: /^Explosion\d+\.png$/, out: "fx_fire.png" },
   { dir: "Circle_explosion", re: /\.png$/, out: "fx_burst.png" },
   { dir: "Explosion_two_colors", re: /\.png$/, out: "fx_ice.png" },
+  // the cyan spark-burst impact frames — a short electric crackle at a point
+  { dir: "Lightning", re: /^Lightning_spot\d+\.png$/, out: "fx_light.png" },
 ];
 
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: "new", args: ["--no-sandbox"] });

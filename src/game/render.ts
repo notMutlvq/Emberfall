@@ -3,7 +3,7 @@
  * Ported verbatim from emberfall-v9.html.
  */
 import { S, P, W, $, clamp, tsrc, TW, ANIM, T, ELCOL, type ClassKey } from "./core.ts";
-import { SHEET, HEROC, HERO_TIERS, heroTier, BOSSI, RINGIMG, FX_STRIPS, FX_CELL, MOBSHEET } from "./assets.ts";
+import { SHEET, HEROC, HERO_TIERS, heroTier, BOSSI, FX_STRIPS, FX_CELL, MOBSHEET, iconCanvasFor, potionCanvas } from "./assets.ts";
 import { abById, abMods } from "./abilities.ts";
 
 const cv = $("cv") as HTMLCanvasElement;
@@ -58,12 +58,8 @@ function drawHero(cx: number, cy: number, size: number): void {
   ctx.drawImage(img, sx, sy, 64, 64, cx - size / 2, cy - size * 0.81, size, size);
 }
 
-function drawItem(slot: "weapon" | "armor" | "ring", cx: number, cy: number, sz: number): void {
-  if (slot === "ring") {
-    ctx.drawImage(RINGIMG, cx - sz / 2, cy - sz * 0.92, sz, sz);
-    return;
-  }
-  ent(T.icon[slot], cx, cy, sz, false);
+function drawIcon(src: HTMLCanvasElement, cx: number, cy: number, sz: number): void {
+  ctx.drawImage(src, cx - sz / 2, cy - sz * 0.92, sz, sz);
 }
 
 export function draw(): void {
@@ -127,15 +123,28 @@ export function draw(): void {
   Z.loot.forEach((l) => {
     if (!vis(l.x, l.y)) return;
     const bob = Math.sin(performance.now() / 300 + l.b) * 3;
-    const col = l.pot ? "#5f9a6a" : ["#9aa0b5", "#5f8fc0", "#c9a227", "#b0603f"][l.item!.rar];
+    const rar = l.pot ? -1 : l.item!.rar;
+    const col = l.pot ? "#5f9a6a" : ["#9aa0b5", "#5f8fc0", "#c9a227", "#b0603f"][rar];
+    const lx = SX(l.x);
+    const ly = SY(l.y);
     ctx.globalAlpha = 0.4;
     ctx.fillStyle = col;
     ctx.beginPath();
-    ctx.ellipse(SX(l.x), SY(l.y), TS * 0.3, TS * 0.15, 0, 0, 7);
+    ctx.ellipse(lx, ly, TS * 0.3, TS * 0.15, 0, 0, 7);
     ctx.fill();
     ctx.globalAlpha = 1;
-    if (l.pot) ent(T.potion, SX(l.x), SY(l.y) + bob - TS * 0.15, TS * 0.62, false);
-    else drawItem(l.item!.slot, SX(l.x), SY(l.y) + bob - TS * 0.15, TS * 0.62);
+    // rare / relic drops get a pulsing beam so they read from across a room
+    if (rar >= 2) {
+      const pulse = 0.3 + 0.2 * Math.sin(performance.now() / 220 + l.b);
+      const grd = ctx.createLinearGradient(0, ly - TS * 1.6, 0, ly);
+      grd.addColorStop(0, "rgba(0,0,0,0)");
+      grd.addColorStop(1, col);
+      ctx.globalAlpha = pulse;
+      ctx.fillStyle = grd;
+      ctx.fillRect(lx - 2, ly - TS * 1.6, 4, TS * 1.6);
+      ctx.globalAlpha = 1;
+    }
+    drawIcon(l.pot ? potionCanvas() : iconCanvasFor(l.item!), lx, ly + bob - TS * 0.15, TS * 0.66);
   });
   for (const id in S.auras)
     if (S.auras[id] > 0) {

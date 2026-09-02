@@ -494,10 +494,11 @@ function fx(x: number, y: number, v: number | string, c: string): void {
   W.Z.fx.push({ x, y: y - 0.6, v, c, t: 0.8 });
 }
 
-/* sprite blast — fire / ice / gold burst by element, over ~0.5s */
+/* sprite blast — fire / ice / lightning / gold burst by element, over ~0.5s */
 function bang(x: number, y: number, el: string | undefined, scale: number): void {
-  const anim = el === "fire" ? "fire" : el === "cold" ? "ice" : "burst";
-  W.Z.fx.push({ x, y, anim, animDur: 0.5, animScale: scale, t: 0.5, c: "#fff" });
+  const anim = el === "fire" ? "fire" : el === "cold" ? "ice" : el === "light" ? "light" : "burst";
+  const dur = anim === "light" ? 0.32 : 0.5;
+  W.Z.fx.push({ x, y, anim, animDur: dur, animScale: scale, t: dur, c: "#fff" });
 }
 
 export function shoot(
@@ -603,6 +604,7 @@ function activateAbility(ab: Ability, m: AbMods, st: Stats, dmg: number, hits: n
       px = cur.x;
       py = cur.y;
       hitMob(cur, dmg, st, ab.el, m);
+      bang(px, py, "light", 1.1);
       cur = Z.mobs.filter((q) => !hit.includes(q) && Math.hypot(q.x - px, q.y - py) < 4)[0];
     }
   } else if (ab.type === "ground") {

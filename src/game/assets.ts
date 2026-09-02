@@ -17,6 +17,7 @@ import potionsUrl from "../assets/potions.png";
 import fxFireUrl from "../assets/fx_fire.png";
 import fxBurstUrl from "../assets/fx_burst.png";
 import fxIceUrl from "../assets/fx_ice.png";
+import fxLightUrl from "../assets/fx_light.png";
 import mobsUrl from "../assets/mobs.png";
 
 function img(src: string): HTMLImageElement {
@@ -44,6 +45,7 @@ export const FX_STRIPS: Record<string, { img: HTMLImageElement; n: number }> = {
   fire: { img: img(fxFireUrl), n: 10 },
   burst: { img: img(fxBurstUrl), n: 10 },
   ice: { img: img(fxIceUrl), n: 10 },
+  light: { img: img(fxLightUrl), n: 4 },
 };
 export const FX_CELL = 96;
 
@@ -83,20 +85,6 @@ export function tileCanvas(i: number, s: number): HTMLCanvasElement {
   return c;
 }
 
-export const RINGIMG: HTMLCanvasElement = (() => {
-  const c = document.createElement("canvas");
-  c.width = c.height = 16;
-  const g = c.getContext("2d")!;
-  g.strokeStyle = "#e0a63c";
-  g.lineWidth = 3;
-  g.beginPath();
-  g.arc(8, 9, 4.2, 0, 7);
-  g.stroke();
-  g.fillStyle = "#6fc3d9";
-  g.fillRect(6, 2, 4, 3);
-  return c;
-})();
-
 /* ---------- item icons ----------
  * CraftPix atlases for weapon + armor; rings stay procedural (locked
  * decision #4). Cached per uid so every item keeps a stable, varied icon.
@@ -108,17 +96,17 @@ const WEAP_POOL = [...range(0, 60), ...range(70, 100)];
 const ARMOR_POOL = [60, 61, 62, 63, 64, 65];
 const RING_GEM = ["#9aa4c0", "#6fb0e6", "#ffc94d", "#e08a5c"]; // common/fine/rare/relic
 
-function atlasCell(sheet: HTMLImageElement, idx: number, cols: number, cell: number, out: number): string {
+function atlasCell(sheet: HTMLImageElement, idx: number, cols: number, cell: number, out: number): HTMLCanvasElement {
   const c = document.createElement("canvas");
   c.width = c.height = out;
   const g = c.getContext("2d")!;
   g.imageSmoothingEnabled = false;
   g.drawImage(sheet, (idx % cols) * cell, Math.floor(idx / cols) * cell, cell, cell, 0, 0, out, out);
-  return c.toDataURL();
+  return c;
 }
 
-const ringCache: string[] = [];
-function ringIcon(rar: number): string {
+const ringCache: HTMLCanvasElement[] = [];
+function ringIcon(rar: number): HTMLCanvasElement {
   if (ringCache[rar]) return ringCache[rar];
   const c = document.createElement("canvas");
   c.width = c.height = 64;
@@ -136,24 +124,42 @@ function ringIcon(rar: number): string {
   g.lineWidth = 2;
   g.strokeStyle = "#1e2233";
   g.stroke();
-  return (ringCache[rar] = c.toDataURL());
+  return (ringCache[rar] = c);
 }
 
-const iconCache = new Map<string, string>();
-export function iconFor(it: Item): string {
+/** Item icon as a <canvas> (for the canvas render loop — ground loot). */
+const iconCanvasCache = new Map<string, HTMLCanvasElement>();
+export function iconCanvasFor(it: Item): HTMLCanvasElement {
   const key = it.slot + ":" + it.uid;
-  const hit = iconCache.get(key);
+  const hit = iconCanvasCache.get(key);
   if (hit) return hit;
-  let url: string;
+  let cv: HTMLCanvasElement;
   if (it.slot === "ring") {
-    url = ringIcon(it.rar);
+    cv = ringIcon(it.rar);
   } else {
     const pool = it.slot === "armor" ? ARMOR_POOL : WEAP_POOL;
     const idx = pool[(it.uid * 13 + it.ilvl) % pool.length];
-    url = atlasCell(WEAPONS, idx, 10, 32, 64);
+    cv = atlasCell(WEAPONS, idx, 10, 32, 64);
   }
-  iconCache.set(key, url);
+  iconCanvasCache.set(key, cv);
+  return cv;
+}
+
+/** Item icon as a data URL (for DOM <img> in the sheets). */
+const iconUrlCache = new Map<string, string>();
+export function iconFor(it: Item): string {
+  const key = it.slot + ":" + it.uid;
+  const hit = iconUrlCache.get(key);
+  if (hit) return hit;
+  const url = iconCanvasFor(it).toDataURL();
+  iconUrlCache.set(key, url);
   return url;
+}
+
+/** A ground-potion icon from the CraftPix potions atlas (cell 0). */
+let potionCv: HTMLCanvasElement | null = null;
+export function potionCanvas(): HTMLCanvasElement {
+  return (potionCv ??= atlasCell(POTIONS, 0, 8, 32, 64));
 }
 
 export function heroPortrait(cls: ClassKey): string {

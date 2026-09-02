@@ -28,6 +28,9 @@ CC0 — public domain, no restrictions, attribution not required. Credited anywa
   bones, ruined arches, dead trees, clawing hands — from
   `Asset_1/Map/Objects_separately/`).
 - `fx_fire/burst/ice.png` — `scripts/pack-fx.mjs` (10-frame effect strips).
+- `fx_light.png` — `scripts/pack-fx.mjs`, the 4 `Lightning_spot` spark-burst
+  frames from `Asset_1/Effect/Lightning/`. Used for lightning-element ability
+  hits and each chain-lightning jump.
 - `env.png` — `scripts/pack-env.mjs`: the dungeon ground strip (tan/grey
   cobblestone floors + detail, dark cave-rock walls) from
   `Asset_1/Map/Ground_rocks.png`. The same script re-skins the `tilesheet.png`
@@ -66,8 +69,9 @@ No attribution string is required in-product.
 
 ## Outstanding art work
 
-- The player character (`hero.png`) is an unclothed base sprite meant for
-  layering — a clothing layer is not yet made.
-- The object tiles still read from `tilesheet.png` (chest, stash, anvil, gate,
-  potion, NPC portraits) are Kenney and clash with the CraftPix ground; matching
-  object art is still needed.
+- All three classes render the CraftPix Swordsman sprite (tinted per class) — a
+  mage holding a sword reads oddly; per-class weapon art is not made.
+- Monsters use one static icon per kind (`mobs.png`); no per-kind variety or
+  attack frames. The `Monestar/` icon set can't cleanly supply thematic
+  undead pairs, so this stays as-is.
+- The `tilesheet.png` NPC portraits (quartermaster, scholar) are still Kenney.
